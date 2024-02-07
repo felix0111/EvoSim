@@ -34,9 +34,10 @@ public class FoodPool {
 
         //resets food
         fs.gameObject.SetActive(true);
-        fs.transform.position = pos;
+        fs.transform.position = (Vector3)pos + Vector3.back;
 
         fs.IsMeat = isMeat;
+        fs.Density = SimulationScript.Instance.CoSh.FoodDensity;
         fs.NutritionalValue = nutValue;
 
         _activeFoods.Add(fs);
@@ -75,7 +76,7 @@ public class EntityPool {
         if (es == null) return null;
 
         es.gameObject.SetActive(true);
-        es.transform.position = pos;
+        es.transform.position = (Vector3)pos + Vector3.back;
         es.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
 
         if (se.Network == null || se.Gene == null) {
@@ -98,4 +99,49 @@ public class EntityPool {
 
         es.gameObject.SetActive(false);
     }
+}
+
+public class PheromonePool {
+
+    private PheromoneScript[] _allPheromones;
+    public List<PheromoneScript> ActivePheromones;
+
+    private readonly int _maxPheromoneCount;
+
+    public PheromonePool(GameObject prefab, Transform placeholder, int maxCount) {
+        _maxPheromoneCount = maxCount;
+        _allPheromones = new PheromoneScript[_maxPheromoneCount];
+        ActivePheromones = new List<PheromoneScript>(_maxPheromoneCount);
+
+        //pre-instantiate
+        for (int i = 0; i < _maxPheromoneCount; i++) {
+            _allPheromones[i] = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity, placeholder).GetComponent<PheromoneScript>();
+            _allPheromones[i].gameObject.name = "Pheromone" + i;
+            _allPheromones[i].gameObject.SetActive(false);
+        }
+    }
+
+    public PheromoneScript SpawnPheromone(Vector2 pos, Vector2 direction, Color color, int senderID) {
+        PheromoneScript ps = _allPheromones.FirstOrDefault(o => !o.gameObject.activeSelf);
+        if (ps == null) return null;
+
+        ps.gameObject.SetActive(true);
+        ps.transform.position = pos;
+        ps.PheromoneColor = color;
+        ps.SenderID = senderID;
+        ps.Direction = direction;
+
+        ps.StartPheromone();
+
+        ActivePheromones.Add(ps);
+
+        return ps;
+    }
+
+    public void DespawnPheromone(PheromoneScript ps) {
+        ps.StopAllCoroutines();
+        ActivePheromones.Remove(ps);
+        ps.gameObject.SetActive(false);
+    }
+
 }

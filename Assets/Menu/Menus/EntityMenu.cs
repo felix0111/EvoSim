@@ -15,7 +15,7 @@ public class EntityMenu : MonoBehaviour {
 
     private EntityScript _entity;
     private bool _isLocked;
-    private LineRenderer _lineRenderer;
+    private LineRenderer _leftViewConeLine, _rightViewConeLine;
 
     //ui
     private Slider _energyBar, _healthBar, _meatBar, _plantBar;
@@ -57,13 +57,19 @@ public class EntityMenu : MonoBehaviour {
     }
 
     private void UpdateVisionVisualizer() {
-        if (_lineRenderer == null) _lineRenderer = Utility.MakeVisualizerLine(transform, Color.magenta, LineRendererMaterial);
+        if (_leftViewConeLine == null) _leftViewConeLine = Utility.MakeVisualizerLine(transform, Color.magenta, LineRendererMaterial);
+        if (_rightViewConeLine == null) _rightViewConeLine = Utility.MakeVisualizerLine(transform, Color.magenta, LineRendererMaterial);
 
-        //from entity position in main vision direction
+        Vector2 dir = (Quaternion.Euler(0f, 0f, _entity.VisionAngle - _entity.FieldOfView) * _entity.transform.up).normalized;
         Vector2 startPos = _entity.transform.position;
-        Vector2 endPos = startPos + _entity.VisionVector * (_entity.Gene.ViewDistance + _entity.Radius);
-        _lineRenderer.SetPosition(0, startPos);
-        _lineRenderer.SetPosition(1, endPos);
+        Vector2 endPos = startPos + dir * (_entity.Gene.ViewDistance + _entity.Radius);
+        _leftViewConeLine.SetPosition(0, startPos);
+        _leftViewConeLine.SetPosition(1, endPos);
+
+        dir = (Quaternion.Euler(0f, 0f, _entity.VisionAngle + _entity.FieldOfView) * _entity.transform.up).normalized;
+        endPos = startPos + dir * (_entity.Gene.ViewDistance + _entity.Radius);
+        _rightViewConeLine.SetPosition(0, startPos);
+        _rightViewConeLine.SetPosition(1, endPos);
     }
 
     private void UpdateInfoText() {
@@ -80,9 +86,12 @@ public class EntityMenu : MonoBehaviour {
         InfoText.text += "Oscillator Frequency: " + _entity.Gene.OscillatorFrequency.ToString("F1") + "<br>";
         InfoText.text += "Entity Size: " + _entity.Gene.EntitySize.ToString("F1") + "<br>";
         InfoText.text += "View Distance: " + _entity.Gene.ViewDistance.ToString("F1") + "<br>";
+        InfoText.text += "Vision Angle: " + _entity.VisionAngle.ToString("F1") + "<br>";
+        InfoText.text += "Field of View: " + _entity.FieldOfView.ToString("F1") + "<br>";
+        InfoText.text += "Pos: " + _entity.VisionHandler.AvgPlantPosition + "<br>";
+        InfoText.text += "Dist: " + _entity.VisionHandler.AvgPlantDistance + "<br>";
+        InfoText.text += "Amount in View: " + _entity.VisionHandler.InVisionCone.Count + "<br>";
         InfoText.text += "Velocity: " + _entity.Rigidbody.velocity.ToString("F1") + "<br>";
-        InfoText.text += "Target: " + (_entity.VisionTarget != null ? _entity.VisionTarget.name : "/") + "<br>";
-        InfoText.text += "Target Distance: " + _entity.TargetDistance + "<br>";
         InfoText.text += "Species: " + _entity.Network.SpeciesID + "<br>";
         InfoText.text += "Fitness: " + _entity.Network.Fitness + "<br>";
         InfoText.text += "Is mutated: " + _entity.IsMutated + "<br>";
@@ -123,7 +132,7 @@ public class EntityMenu : MonoBehaviour {
 
     public void OnDisable() {
         if(NNVisualizerMenu.isActiveAndEnabled) NNVisualizerMenu.gameObject.SetActive(false);
-        if(_lineRenderer != null) Destroy(_lineRenderer.gameObject);
+        if(_leftViewConeLine != null) Destroy(_leftViewConeLine.gameObject);
     }
     
 }

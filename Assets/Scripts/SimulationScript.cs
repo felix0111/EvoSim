@@ -30,11 +30,12 @@ public class SimulationScript : MonoBehaviour {
     public FoodSpawnAreaScript[] SpawnAreas;
 
     //prefabs
-    public GameObject FoodPrefab, EntityPrefab;
+    public GameObject FoodPrefab, EntityPrefab, PheromonePrefab;
 
     //object pooling
     public FoodPool FoodPool;
     public EntityPool EntityPool;
+    public PheromonePool PheromonePool;
 
     //neural net
     public Neat Neat;
@@ -47,15 +48,16 @@ public class SimulationScript : MonoBehaviour {
         Instance = this;
 
         //load assets
-        if(PlayerPrefs.GetString("DefaultEntity") != "empty") _defaultEntity = Serializer.ReadFromBinaryFile<SerializableEntity>(Application.streamingAssetsPath + "/" + PlayerPrefs.GetString("DefaultEntity"));
+        if(PlayerPrefs.GetString("DefaultEntity") != "empty") _defaultEntity = Serializer.ReadFromBinaryFile<SerializableEntity>(Application.persistentDataPath + "/" + PlayerPrefs.GetString("DefaultEntity"));
 
         //init neural net
         NeuralNetHandler.GetNeuronTemplates(out Neuron[] ins, out Neuron[] outs);
         Neat = new Neat(ins, outs, CoSh.SpeciationOptions);
 
         //init object pooling
-        FoodPool = new FoodPool(FoodPrefab, transform, 1500);
+        FoodPool = new FoodPool(FoodPrefab, transform, 8000);
         EntityPool = new EntityPool(EntityPrefab, transform, 300);
+        PheromonePool = new PheromonePool(PheromonePrefab, transform, 1500);
     }
 
     void Start() {

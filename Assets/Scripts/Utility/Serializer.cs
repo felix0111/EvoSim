@@ -38,7 +38,7 @@ public static class Serializer {
     }
 
     public static IEnumerator SaveEntity(SerializableEntity entity) {
-        yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.Files, false, Application.streamingAssetsPath, "Species_" + entity.Network.SpeciesID + ".brain", "Save", "Save");
+        yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.Files, false, Application.persistentDataPath, "Species_" + entity.Network.SpeciesID + ".entity", "Save", "Save");
 
         if (FileBrowser.Success) {
             WriteToBinaryFile(FileBrowser.Result[0], entity);
@@ -46,7 +46,7 @@ public static class Serializer {
     }
 
     public static IEnumerator LoadEntity(Action<SerializableEntity> result) {
-        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, "", "", "Load", "Select");
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, Application.persistentDataPath, "", "Load", "Select");
 
         if (FileBrowser.Success) {
             result.Invoke(ReadFromBinaryFile<SerializableEntity>(FileBrowser.Result[0]));

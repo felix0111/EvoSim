@@ -7,6 +7,7 @@ public class MenuManager : MonoBehaviour {
     public HUDMenu HUDMenu;
     public SpeciesMenu SpeciesMenu;
     public SettingsMenu SettingsMenu;
+    public FoodSpawnerMenu FoodSpawnerMenu;
 
     public int FocusedEntityIndex {
         get => _focusedEntityIndex;
@@ -57,6 +58,8 @@ public class MenuManager : MonoBehaviour {
                 SpeciesMenu.gameObject.SetActive(false);
             } else if (SettingsMenu.isActiveAndEnabled) {
                 SettingsMenu.gameObject.SetActive(false);
+            } else if (FoodSpawnerMenu.isActiveAndEnabled) {
+                FoodSpawnerMenu.gameObject.SetActive(false);
             }
         }
         
@@ -72,6 +75,7 @@ public class MenuManager : MonoBehaviour {
         EntityMenu.gameObject.SetActive(false);
         SpeciesMenu.gameObject.SetActive(false);
         SettingsMenu.gameObject.SetActive(false);
+        FoodSpawnerMenu.gameObject.SetActive(false);
     }
 
     IEnumerator UpdateSpeciesMenu() {

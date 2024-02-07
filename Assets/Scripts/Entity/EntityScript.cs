@@ -9,16 +9,12 @@ using Random = UnityEngine.Random;
 
 public class EntityScript : Interactable {
 
-    //fixed vision vars
-    public GameObject VisionTarget => _visionRaycastHit.collider != null ? _visionRaycastHit.collider.gameObject : null;
-    public float TargetDistance => _visionRaycastHit.distance - Radius;
-    public Vector2 VisionVector => (Quaternion.Euler(0f, 0f, AngleToLook) * transform.up).normalized;
-    public int VisionMask;
-    //dynamic vision vars
-    public float AngleToLook;
-    private RaycastHit2D _visionRaycastHit, _frontRaycastHit;
-    private RaycastHit2D[] _visionRaycastBuffer = new RaycastHit2D[1];
-    private RaycastHit2D[] _frontRaycastBuffer = new RaycastHit2D[1];
+    //vision
+    public VisionHandler VisionHandler;
+    public Vector2 VisionVector => (Quaternion.Euler(0f, 0f, VisionAngle) * transform.up).normalized;
+    public int VisionMask, EatMask, AttackMask;
+    public float VisionAngle;
+    public float FieldOfView;
 
     //neural network
     public Network Network => SimulationScript.Instance.Neat.NetworkCollection[_brainID];
@@ -49,8 +45,7 @@ public class EntityScript : Interactable {
     public Gene Gene;
     public Rigidbody2D Rigidbody;
     public PolygonCollider2D Collider;
-    public GameObject PheromonePrefab;
-    public PheromoneScript LastProducedPheromone;
+    public ParticleSystem ParticleSystem;
     public float PassedTime;
     public float Radius => SimulationScript.Instance.CoSh.UnscaledEntityRadius * Gene.EntitySize;
 
@@ -77,7 +72,9 @@ public class EntityScript : Interactable {
 
         Rigidbody = GetComponent<Rigidbody2D>();
         Collider = GetComponent<PolygonCollider2D>();
-        VisionMask = LayerMask.GetMask("Food", "Entity", "Obstacle");
+        VisionMask = LayerMask.GetMask("Food", "Entity");
+        EatMask = LayerMask.GetMask("Food");
+        AttackMask = LayerMask.GetMask("Entity");
 
         //init neural network
         _brainID = SimulationScript.Instance.Neat.NetworkCollection.Count;
@@ -89,7 +86,8 @@ public class EntityScript : Interactable {
         StopAllCoroutines();
 
         Age = 0;
-        AngleToLook = 0f;
+        VisionAngle = 0f;
+        FieldOfView = 0f;
         AimedRotationDir = 0f;
         AimedMovementDir = Vector2.zero;
         Health = ScaledMaxHealth;
@@ -105,12 +103,18 @@ public class EntityScript : Interactable {
         _reproduced = 0;
 
         EnergyHandler = new EnergyHandler(this);
+        VisionHandler = new VisionHandler(this, VisionMask);
         _smelledPherosBuffer = new PheromoneScript[2];
 
         //generate empty data
         Gene = new Gene(SimulationScript.Instance.CoSh);
         Gene.UpdateAppearance(this);
         SimulationScript.Instance.Neat.SpeciateSingle(Network);
+
+        //init pheromones
+        var m = ParticleSystem.main;
+        m.startColor = Gene.PheromoneColor;
+        ParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         StartCoroutine(Ageing());
     }
@@ -119,7 +123,8 @@ public class EntityScript : Interactable {
         StopAllCoroutines();
 
         Age = 0;
-        AngleToLook = 0f;
+        VisionAngle = 0f;
+        FieldOfView = 0f;
         AimedRotationDir = 0f;
         AimedMovementDir = Vector2.zero;
         Health = ScaledMaxHealth;
@@ -135,12 +140,18 @@ public class EntityScript : Interactable {
         _reproduced = 0;
 
         EnergyHandler = new EnergyHandler(this);
+        VisionHandler = new VisionHandler(this, VisionMask);
         _smelledPherosBuffer = new PheromoneScript[2];
 
         //transfer data from serializable entity
         Gene = new Gene(se.Gene);
         Gene.UpdateAppearance(this);
         SimulationScript.Instance.Neat.ChangeNetwork(_brainID, se.Network);
+
+        //init pheromones
+        var m = ParticleSystem.main;
+        m.startColor = Gene.PheromoneColor;
+        ParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         StartCoroutine(Ageing());
     }
@@ -149,9 +160,16 @@ public class EntityScript : Interactable {
     void FixedUpdate() {
         PassedTime += Time.deltaTime;
 
+        _pheromoneCooldown += Time.deltaTime;
+        _eatCooldown += Time.deltaTime;
+        _attackCooldown += Time.deltaTime;
+
+        //update vision
         if (_step >= SimulationScript.Instance.CoSh.CheckVisionStep) {
-            CheckVision();
+            VisionHandler.UpdateVision(VisionVector, FieldOfView, false, true);
             _step = 0;
+        } else {
+            VisionHandler.UpdateVision(VisionVector, FieldOfView, false, false);
         }
         _step++;
 
@@ -164,19 +182,8 @@ public class EntityScript : Interactable {
         //process neural network outputs
         Move();
 
-        //update fitness
-
         //update energy
         EnergyHandler.ConsumeEnergy();
-    }
-
-    private void CheckVision() {
-        //process vision
-        int cols = Collider.Raycast(transform.up, _frontRaycastBuffer, 2f + Radius, VisionMask);
-        _frontRaycastHit = cols == 0 ? default : _frontRaycastBuffer[0];
-
-        cols = Collider.Raycast(VisionVector, _visionRaycastBuffer, Gene.ViewDistance + Radius, VisionMask);
-        _visionRaycastHit = cols == 0 ? default : _visionRaycastBuffer[0];
     }
 
     private void Move() {
@@ -233,17 +240,14 @@ public class EntityScript : Interactable {
 
         //spawn meat on death
         if (spawnLeftover) {
-            float energyLeft = SimulationScript.Instance.CoSh.LeftoverBaseEnergy;
+            float energyLeft = SimulationScript.Instance.CoSh.LeftoverBaseEnergy + EnergyHandler.AmountInStomach + EnergyHandler.ActiveEnergy/2f;
             while (energyLeft > 0f) {
-                //TODO check for collision?
-                Vector2 pos = Utility.RandomPosInRadius(transform.position, SimulationScript.Instance.CoSh.MaxKillDropDistance);
-
                 if (energyLeft <= SimulationScript.Instance.CoSh.MaxFoodNutrition) {
-                    SimulationScript.Instance.FoodPool.SpawnFood(pos, energyLeft, true);
+                    SimulationScript.Instance.FoodPool.SpawnFood(transform.position, energyLeft, true);
                     break;
                 }
 
-                FoodScript f = SimulationScript.Instance.FoodPool.SpawnFood(pos, SimulationScript.Instance.CoSh.MaxFoodNutrition, true);
+                FoodScript f = SimulationScript.Instance.FoodPool.SpawnFood(transform.position, SimulationScript.Instance.CoSh.MaxFoodNutrition, true);
                 energyLeft -= f.NutritionalValue;
             }
         }
@@ -267,25 +271,25 @@ public class EntityScript : Interactable {
     public void ProducePheromone() {
         if(_pheromoneCooldown < SimulationScript.Instance.CoSh.PheromoneCooldown) return;
 
-        LastProducedPheromone = Instantiate(PheromonePrefab, transform.position, Quaternion.identity, SimulationScript.Instance.transform).GetComponent<PheromoneScript>();
+        if(SimulationScript.Instance.CoSh.ShowParticles) ParticleSystem.Emit(3);
+        SimulationScript.Instance.PheromonePool.SpawnPheromone(transform.position, Rigidbody.velocity.normalized, Gene.PheromoneColor, gameObject.GetInstanceID());
 
-        LastProducedPheromone.SenderID = gameObject.GetInstanceID();
-        LastProducedPheromone.Direction = Rigidbody.velocity.normalized;
-        LastProducedPheromone.Color = Gene.PheromoneColor;
+        _pheromoneCooldown = 0f;
     }
 
     private float _eatCooldown;
     public void Eat() {
-        if(_eatCooldown < SimulationScript.Instance.CoSh.EatCooldown)
+        if (_eatCooldown < SimulationScript.Instance.CoSh.EatCooldown) return;
 
-        //if can eat
-        if (_frontRaycastHit.distance - Radius <= SimulationScript.Instance.CoSh.MaxEatDistance && _frontRaycastHit.collider != null && _frontRaycastHit.collider.TryGetComponent(out FoodScript fs)) {
-
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, SimulationScript.Instance.CoSh.MaxEatDistance + Radius, EatMask);
+        if (hit.collider != null && hit.collider.TryGetComponent(out FoodScript fs)) {
             float actualIntake = fs.NutritionalValue < ScaledFoodIntake ? fs.NutritionalValue : ScaledFoodIntake;
             actualIntake = EnergyHandler.ToStomach(actualIntake, fs.IsMeat);
             fs.NutritionalValue -= actualIntake;
 
             _nutrientsEaten += actualIntake;
+
+            _eatCooldown = 0f;
         }
     }
 
@@ -293,20 +297,15 @@ public class EntityScript : Interactable {
     public void Attack() {
         if (_attackCooldown < SimulationScript.Instance.CoSh.AttackCooldown) return;
 
-        //if can attack
-        if (_frontRaycastHit.distance - Radius <= SimulationScript.Instance.CoSh.MaxAttackDistance && _frontRaycastHit.collider != null && _frontRaycastHit.collider.TryGetComponent(out EntityScript es)) {
-
-            if (es == this) {
-                SimulationScript.Instance.MenuManager.EntityMenu.OpenMenu(this);
-                Debug.Log("Attacking self" + gameObject.name);
-                Debug.Break();
-            }
-
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, SimulationScript.Instance.CoSh.MaxAttackDistance + Radius, AttackMask);
+        if (hit.collider != null && hit.collider.TryGetComponent(out EntityScript es)) {
             float factor = Network.OutputValues[(int)ActionNeuron.ActionAttack];
             float dealedDamage = es.Damage(ScaledAttackDamage * factor);
             EnergyHandler.ToStomach(dealedDamage, true);
 
             _attackedOther += dealedDamage;
+
+            _attackCooldown = 0f;
         }
     }
 

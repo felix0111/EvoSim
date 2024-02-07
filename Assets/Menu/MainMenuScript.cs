@@ -24,8 +24,8 @@ public class MainMenuScript : MonoBehaviour {
     }
 
     public void LoadEntityAssets() {
-        var info = new DirectoryInfo(Application.streamingAssetsPath);
-        transform.Find("Main").Find("DefaultEntity").GetComponentInChildren<TMP_Dropdown>().AddOptions(info.GetFiles("*.brain").Select(o => o.Name).ToList());
+        var info = new DirectoryInfo(Application.persistentDataPath);
+        transform.Find("Main").Find("DefaultEntity").GetComponentInChildren<TMP_Dropdown>().AddOptions(info.GetFiles("*.entity").Select(o => o.Name).ToList());
     }
 
 }

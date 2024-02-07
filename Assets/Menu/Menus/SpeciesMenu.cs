@@ -25,7 +25,7 @@ public class SpeciesMenu : MonoBehaviour {
 
         for (int i = 0; i < SimulationScript.Instance.Neat.Species.Count; i++) {
             var species = SimulationScript.Instance.Neat.Species.ElementAt(i);
-            float speciesPercentage = (float)species.Value.AllNetworks.Count / 80f;
+            float speciesPercentage = (float)species.Value.AllNetworks.Count / 250f;
 
             string dataInfo = "Species " + species.Key + "<br>Amount: " + species.Value.AllNetworks.Count;
             _chartData.AddDataPointAtStep(timeStep, new ChartDataPoint(species.Key, speciesPercentage, dataInfo));

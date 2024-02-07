@@ -9,6 +9,7 @@ public class ConstantSheet
     public float MaxFoodRadius = 2f;
     public float MinFoodRadius = 0.6f;
     public float MeatDecompositionRate = 60f * 15f;
+    public float FoodDensity = 2f;
 
     //global variables for entity
     //health stuff
@@ -63,10 +64,9 @@ public class ConstantSheet
     public float MinAttackDamage = 20f;
     public float MinDefenseFactor = 0f;
     public float MaxDefenseFactor = 0.8f;
-    public float MaxKillDropDistance = 1.5f;
     
     //movement
-    public float MaxRotationSpeed = 4f;
+    public float MaxRotationSpeed = 16f;
     public float MaxMovementSpeed = 100f;
     public float MinMovementSpeed = 20f;
 
@@ -99,13 +99,14 @@ public class ConstantSheet
     
     //pheromone
     public float PheromoneDegradeTime = 12f;
-    public float PheromoneCooldown = 1f;
-    public float PheromoneSmellDistance = 4f;
+    public float PheromoneCooldown = 1.5f;
+    public float PheromoneSmellDistance = 8f;
 
     //vision
-    public float FieldOfView = 80f;
-    public float MinViewDistance = 5f;
-    public float MaxViewDistance = 20f;
+    public float MaxVisionAngle = 80f;
+    public float MaxFieldOfView = 30f;
+    public float MinViewDistance = 10f;
+    public float MaxViewDistance = 30f;
 
     //entity misc
     public float UnscaledEntityRadius = 0.45f;   //size in radius
@@ -113,10 +114,11 @@ public class ConstantSheet
     public float MaxEntitySize = 4f;
     public float MinOscillatorFrequency = 0.5f;
     public float MaxOscillatorFrequency = 40f;
-    public float LeftoverBaseEnergy = 20f;
+    public float LeftoverBaseEnergy = 25f;
 
     //other
     public float SpeciesLoggingRate = 60f * 5f;
-    public int CheckVisionStep = 1;
+    public int CheckVisionStep = 2;
+    public bool ShowParticles = true;
 
 }

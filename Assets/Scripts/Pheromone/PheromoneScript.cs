@@ -4,35 +4,28 @@ using UnityEngine;
 
 public class PheromoneScript : Interactable {
 
-    public CircleCollider2D CircleCollider2D;
-    public ParticleSystem ParticleSystem;   
+    private CircleCollider2D _circleCollider2D;
 
     public int SenderID;
     public Vector2 Direction;
-    public Color Color;
-
-    public Color PheromoneColor => ParticleSystem.main.startColor.color;
+    public Color PheromoneColor;
 
     //called once directly after Instantiating
     public override void Awake() {
         base.Awake();
 
-        CircleCollider2D = GetComponent<CircleCollider2D>();
-        ParticleSystem = GetComponent<ParticleSystem>();
+        _circleCollider2D = GetComponent<CircleCollider2D>();
     }
 
-    void Start() {
-        CircleCollider2D.radius = SimulationScript.Instance.CoSh.PheromoneSmellDistance;
-        var m = ParticleSystem.main;
-        m.startLifetime = SimulationScript.Instance.CoSh.PheromoneDegradeTime - m.duration;
-        m.startColor = Color;
+    public void StartPheromone() {
+        _circleCollider2D.radius = SimulationScript.Instance.CoSh.PheromoneSmellDistance;
 
         StartCoroutine(DegradeRoutine());
     }
 
     IEnumerator DegradeRoutine() {
         yield return new WaitForSeconds(SimulationScript.Instance.CoSh.PheromoneDegradeTime);
-        Destroy(gameObject);
+        SimulationScript.Instance.PheromonePool.DespawnPheromone(this);
     }
     
 }

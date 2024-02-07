@@ -1,9 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class FoodSpawnAreaScript : MonoBehaviour {
 
-    public float Radius => _spriteRenderer.bounds.extents.x;
+    public float Radius {
+        get => _spriteRenderer.bounds.extents.x;
+        set => transform.localScale = new Vector3(value * 2f, value * 2f);
+    }
 
     private SpriteRenderer _spriteRenderer;
 
@@ -32,10 +36,18 @@ public class FoodSpawnAreaScript : MonoBehaviour {
             }
 
             Vector2 pos = Utility.RandomPosInRadius(transform.position, Radius);
-            if(Utility.IsCollidingOnPos(pos, SimulationScript.Instance.CoSh.MaxFoodRadius, LayerMask.GetMask("Food", "Entity", "Obstacle"))) continue;
+            if(Utility.IsCollidingOnPos(pos, SimulationScript.Instance.CoSh.MaxFoodRadius, LayerMask.GetMask("Food", "Entity"))) continue;
 
             SimulationScript.Instance.FoodPool.SpawnFood(pos, Utility.RandomNutritionalValue, SpawnMeat);
             SpawnCount++;
         }
+    }
+
+    void OnMouseOver() {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
+        //if right clicked
+        if (!Input.GetMouseButtonDown(1)) return;
+        SimulationScript.Instance.MenuManager.FoodSpawnerMenu.OpenMenu(this);
     }
 }

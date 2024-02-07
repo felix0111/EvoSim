@@ -22,6 +22,11 @@ public class FoodScript : Interactable {
     }
     private bool _isMeat;
 
+    public float Density {
+        get => _collider.density;
+        set => _collider.density = value;
+    }
+
     public float NutritionalValue {
         get => _nutritionalValue;
         set {
@@ -35,12 +40,14 @@ public class FoodScript : Interactable {
     private float _nutritionalValue;
 
     private SpriteRenderer _spriteRenderer;
+    private Collider2D _collider;
 
     //called only once
     public override void Awake() {
         base.Awake();
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _collider = GetComponent<Collider2D>();
     }
 
     //resetting to default values

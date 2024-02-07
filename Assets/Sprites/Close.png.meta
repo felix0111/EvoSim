@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 27a29c93e4ecd8440a7cf85994b44673
+guid: 88b725d7f51a59149b446a04373814d7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4646649027328027380
-    second: Egg_0
+      213: 5248415023898783801
+    second: Close_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,22 +100,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Egg_0
+      name: Close_0
       rect:
         serializedVersion: 2
-        x: 5
+        x: 0
         y: 0
-        width: 656
-        height: 654
+        width: 512
+        height: 512
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4fa2dcddba63c7040800000000000000
-      internalID: 4646649027328027380
+      spriteID: 9307f4d28ad16d840800000000000000
+      internalID: 5248415023898783801
       vertices: []
       indices: 
       edges: []
@@ -123,14 +123,15 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ec9ca0608a219cd40a80e849ba2cfe8e
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Close_0: 5248415023898783801
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

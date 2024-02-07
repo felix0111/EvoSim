@@ -92,17 +92,13 @@ public class CollisionWatcher : MonoBehaviour {
 
     public int All<T>(T[] array) where T : MonoBehaviour {
 
-        T comp;
         int arrayStep = 0;
 
         for (int i = 0; i < Colliders.Count; i++) {
-            comp = Colliders[i].GetComponent<T>();
-
             if (array.Length == arrayStep) break;
-            if (comp != null) {
-                array[arrayStep] = comp;
-                arrayStep++;
-            }
+
+            array[arrayStep] = Colliders[i].GetComponent<T>();
+            if (array[arrayStep] != null) arrayStep++;
         }
         
         //fill rest of array with null

@@ -8,11 +8,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
+using static System.Collections.Specialized.BitVector32;
 
 public class SettingsMenu : MonoBehaviour {
 
     //ui
-    public GameObject MenuSectionPrefab, SliderPrefab, DoubleSliderPrefab;
+    public GameObject MenuSectionPrefab, SliderPrefab, DoubleSliderPrefab, CheckboxPrefab;
     public RectTransform MenuSectionContent;
     private List<GameObject> _menuSections = new();
 
@@ -23,11 +24,13 @@ public class SettingsMenu : MonoBehaviour {
         AddSection("Energy Consumption");
         AddSection("Reproduction");
         AddSection("Fighting");
+        AddSection("Pheromone");
         AddSection("Food");
 
         AddSliderToSection("Simulation", "Check for Improvement Rate", SimulationScript.Instance.CoSh.CheckImprovementRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.CheckImprovementRate = o);
         AddSliderToSection("Simulation", "Species Logging Rate", SimulationScript.Instance.CoSh.SpeciesLoggingRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.SpeciesLoggingRate = o);
         AddSliderToSection("Simulation", "Vision Step", SimulationScript.Instance.CoSh.CheckVisionStep, true, 1, 8, o => SimulationScript.Instance.CoSh.CheckVisionStep = (int)o);
+        AddCheckboxToSection("Simulation", "Show Particles", SimulationScript.Instance.CoSh.ShowParticles, o => SimulationScript.Instance.CoSh.ShowParticles = o);
 
         AddDoubleSliderToSection("Entity", "Size", SimulationScript.Instance.CoSh.MinEntitySize, SimulationScript.Instance.CoSh.MaxEntitySize, false, 0.5f, 15f, (min, max) => { SimulationScript.Instance.CoSh.MinEntitySize = min; SimulationScript.Instance.CoSh.MaxEntitySize = max; });
         AddSliderToSection("Entity", "Max. Age", SimulationScript.Instance.CoSh.MaxAge, true, 10, 1000, o => SimulationScript.Instance.CoSh.MaxAge = (int)o);
@@ -38,7 +41,8 @@ public class SettingsMenu : MonoBehaviour {
         AddSliderToSection("Entity", "Healing Rate", SimulationScript.Instance.CoSh.HealingRate, false, 0f, 100f, o => SimulationScript.Instance.CoSh.HealingRate = o);
         AddSliderToSection("Entity", "Min. Energy to Heal", SimulationScript.Instance.CoSh.MinEnergyToHeal, false, 0f, 100f, o => SimulationScript.Instance.CoSh.MinEnergyToHeal = o);
         AddDoubleSliderToSection("Entity", "View Distance", SimulationScript.Instance.CoSh.MinViewDistance, SimulationScript.Instance.CoSh.MaxViewDistance, false, 1f, 40f, (min, max) => { SimulationScript.Instance.CoSh.MinViewDistance = min; SimulationScript.Instance.CoSh.MaxViewDistance = max; });
-        AddSliderToSection("Entity", "Field Of View", SimulationScript.Instance.CoSh.FieldOfView, false, 1f, 179f, o => SimulationScript.Instance.CoSh.FieldOfView = o);
+        AddSliderToSection("Entity", "Max. Vision Angle", SimulationScript.Instance.CoSh.MaxVisionAngle, false, 1f, 89f, o => SimulationScript.Instance.CoSh.MaxVisionAngle = o);
+        AddSliderToSection("Entity", "Max. Field Of View", SimulationScript.Instance.CoSh.MaxFieldOfView, false, 1f, 89f, o => SimulationScript.Instance.CoSh.MaxFieldOfView = o);
         AddDoubleSliderToSection("Entity", "Movement Speed", SimulationScript.Instance.CoSh.MinMovementSpeed, SimulationScript.Instance.CoSh.MaxMovementSpeed, false, 1f, 200f, (min, max) => { SimulationScript.Instance.CoSh.MinMovementSpeed = min; SimulationScript.Instance.CoSh.MaxMovementSpeed = max; });
         AddSliderToSection("Entity", "Rotation Speed", SimulationScript.Instance.CoSh.MaxRotationSpeed, false, 1f, 8f, o => SimulationScript.Instance.CoSh.MaxRotationSpeed = o);
 
@@ -66,9 +70,15 @@ public class SettingsMenu : MonoBehaviour {
         AddDoubleSliderToSection("Fighting", "Attack Damage", SimulationScript.Instance.CoSh.MinAttackDamage, SimulationScript.Instance.CoSh.MaxAttackDamage, false, 1f, 100f, (min, max) => { SimulationScript.Instance.CoSh.MinAttackDamage = min; SimulationScript.Instance.CoSh.MaxAttackDamage = max; });
         AddDoubleSliderToSection("Fighting", "Defense Factor", SimulationScript.Instance.CoSh.MinDefenseFactor, SimulationScript.Instance.CoSh.MaxDefenseFactor, false, 0f, 1f, (min, max) => { SimulationScript.Instance.CoSh.MinDefenseFactor = min; SimulationScript.Instance.CoSh.MaxDefenseFactor = max; });
 
+        AddSliderToSection("Pheromone", "Pheromone Degrade Time", SimulationScript.Instance.CoSh.PheromoneDegradeTime, false, 4f, 20f, o => SimulationScript.Instance.CoSh.PheromoneDegradeTime = o);
+        AddSliderToSection("Pheromone", "Pheromone Cooldown", SimulationScript.Instance.CoSh.PheromoneCooldown, false, 0.5f, 8f, o => SimulationScript.Instance.CoSh.PheromoneCooldown = o);
+        AddSliderToSection("Pheromone", "Pheromone Radius", SimulationScript.Instance.CoSh.PheromoneSmellDistance, false, 2f, 10f, o => SimulationScript.Instance.CoSh.PheromoneSmellDistance = o);
+
         AddDoubleSliderToSection("Food", "Food Nutrition", SimulationScript.Instance.CoSh.MinFoodNutritíon, SimulationScript.Instance.CoSh.MaxFoodNutrition, false, 10f, 250f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodNutritíon = min; SimulationScript.Instance.CoSh.MaxFoodNutrition = max; });
         AddDoubleSliderToSection("Food", "Food Size", SimulationScript.Instance.CoSh.MinFoodRadius, SimulationScript.Instance.CoSh.MaxFoodRadius, false, 0.4f, 10f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodRadius = min; SimulationScript.Instance.CoSh.MaxFoodRadius = max; });
+        AddSliderToSection("Food", "Food Density", SimulationScript.Instance.CoSh.FoodDensity, false, 0.4f, 5f, o => SimulationScript.Instance.CoSh.FoodDensity = o);
         AddSliderToSection("Food", "Meat Decomposition Rate", SimulationScript.Instance.CoSh.MeatDecompositionRate, false, 30f, 60f * 20f, o => SimulationScript.Instance.CoSh.MeatDecompositionRate = o);
+        
 
     }
 
@@ -116,6 +126,17 @@ public class SettingsMenu : MonoBehaviour {
         s.HighValue = defaultValueMax;
 
         sectionScript.UpdateContentSize();
+    }
+
+    public void AddCheckboxToSection(string section, string checkboxDescription, bool defaultValue, UnityAction<bool> call) {
+        MenuSectionScript sectionScript = _menuSections.First(o => o.name == section).GetComponent<MenuSectionScript>();
+        GameObject checkbox = Instantiate(CheckboxPrefab, sectionScript.ContentRect);
+        checkbox.GetComponentInChildren<TMP_Text>().text = checkboxDescription;
+
+        Toggle t = checkbox.GetComponentInChildren<Toggle>();
+        t.onValueChanged.AddListener(call);
+        t.isOn = defaultValue;
+
     }
 
 }
