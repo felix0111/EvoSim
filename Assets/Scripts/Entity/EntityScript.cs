@@ -199,8 +199,8 @@ public class EntityScript : Interactable {
         Network.CalculateNetwork();
         NeuralNetHandler.ComputeOutputs(Network.OutputValues);
 
-        //check if outside of main area
-        CheckInMainArea();
+        //check if outside of a food area
+        CheckInFoodArea();
 
         //process neural network outputs
         Move();
@@ -389,15 +389,13 @@ public class EntityScript : Interactable {
     }
 
     private float _checkInAreaCooldown;
-    private void CheckInMainArea() {
-        if (_checkInAreaCooldown < 5f || !SimulationScript.Instance.CoSh.RotateToMainArea) return;
+    private void CheckInFoodArea() {
+        if (_checkInAreaCooldown < 5f || !SimulationScript.Instance.CoSh.RotateToMainArea || CollisionWatcher.TryGet(out FoodSpawnAreaScript _)) return;
 
+        //if not in a food area, rotate to nearest food area
         var fsa = Utility.GetNearestFoodArea(transform.position);
-        float dist = Vector2.Distance(transform.position, fsa.transform.position);
-        if (dist > fsa.Radius) {
-            float rot = Vector2.SignedAngle(Rigidbody.linearVelocity, fsa.transform.position - transform.position) / 180f;
-            Rigidbody.AddTorque(rot * 5f, ForceMode2D.Impulse);
-        }
+        float rot = Vector2.SignedAngle(Rigidbody.linearVelocity, fsa.transform.position - transform.position) / 180f;
+        Rigidbody.AddTorque(rot * 5f, ForceMode2D.Impulse);
 
         _checkInAreaCooldown = 0f;
     }
