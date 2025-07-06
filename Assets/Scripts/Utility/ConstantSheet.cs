@@ -5,11 +5,11 @@ public class ConstantSheet
 {
     //global variables for food
     //size
-    public float MinFoodNutritíon = 25f;
-    public float MaxFoodNutrition = 120f;
-    public float MaxFoodRadius = 2f;
+    public float MinFoodNutrition = 25f;
+    public float MaxFoodNutrition = 160f;
+    public float MaxFoodRadius = 4f;
     public float MinFoodRadius = 0.6f;
-    public float MeatDecompositionRate = 60f * 15f;
+    public float FoodDecompositionRate = 60f * 15f;
     public float FoodDensity = 2f;
 
     //global variables for entity
@@ -59,7 +59,7 @@ public class ConstantSheet
     public float MinEnergyToReproduce = 80f;
     public float MaxEnergyToReproduce = 180f;
     public float TimeToReproduce = 60f;
-
+    
     //fighting stuff
     public float MaxAttackDistance = 1f;
     public float AttackCooldown = 1f;

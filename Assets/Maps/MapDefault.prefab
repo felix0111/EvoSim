@@ -225,6 +225,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
+      propertyPath: SpawnPlant
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
+      propertyPath: MaxNutrition
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
+      propertyPath: MinNutrition
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
       propertyPath: MaxFoodAmount
       value: 1200
       objectReference: {fileID: 0}

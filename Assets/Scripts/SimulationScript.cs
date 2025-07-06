@@ -66,13 +66,13 @@ public class SimulationScript : MonoBehaviour {
 
         //spawn entities
         for (int i = 0; i < PlayerPrefs.GetInt("EntityCount"); i++) {
-            EntityScript es = EntityPool.SpawnEntity(Utility.RandomPosInRadius(transform.position, 400), _defaultEntity);
+            EntityScript es = EntityPool.SpawnEntity(RandomSpawnPosition(), _defaultEntity);
             es.Mutate(PlayerPrefs.GetInt("MutationCount"));
         }
 
         //spawn food
         for (int i = 0; i < PlayerPrefs.GetInt("FoodCount"); i++) {
-            FoodPool.SpawnFood(Utility.RandomPosInRadius(transform.position, 400), Utility.RandomNutritionalValue, false);
+            FoodPool.SpawnFood(RandomSpawnPosition(), (CoSh.MinFoodNutrition + CoSh.MaxFoodNutrition) / 2f, false);
         }
 
         StartCoroutine(CheckImprovement());
@@ -84,7 +84,7 @@ public class SimulationScript : MonoBehaviour {
 
         //hold steady population of min. CoSh.MinPopulation entities
         if (EntityPool.ActiveEntities.Count < CoSh.MinPopulation) {
-            EntityScript es = EntityPool.SpawnEntity(Utility.RandomPosInRadius(transform.position, 400), BestEntity.Item2.Network != null ? BestEntity.Item2 : _defaultEntity);
+            EntityScript es = EntityPool.SpawnEntity(RandomSpawnPosition(), BestEntity.Item2.Network != null ? BestEntity.Item2 : _defaultEntity);
             es.Mutate(PlayerPrefs.GetInt("MutationCount"));
         }
 
@@ -134,8 +134,6 @@ public class SimulationScript : MonoBehaviour {
 }
 
 public static class Utility {
-
-    public static float RandomNutritionalValue => Random.Range(SimulationScript.Instance.CoSh.MinFoodNutritíon, SimulationScript.Instance.CoSh.MaxFoodNutrition);
 
     public static Vector2 RandomPosInRadius(Vector2 position, float radius) => position + Random.insideUnitCircle * radius;
 

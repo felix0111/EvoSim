@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +6,7 @@ using UnityEngine.UI.Extensions;
 
 public class FoodSpawnerMenu : MonoBehaviour {
 
-    public GameObject SliderPrefab, CheckboxPrefab;
+    public GameObject SliderPrefab, DoubleSliderPrefab, CheckboxPrefab;
     public RectTransform ContentRect;
 
     private FoodSpawnAreaScript _foodSpawner;
@@ -28,9 +26,10 @@ public class FoodSpawnerMenu : MonoBehaviour {
 
         AddSlider("Radius", _foodSpawner.Radius, true, 200, 1500, o => _foodSpawner.Radius = o);
         AddSlider("Spawn Frequency", _foodSpawner.SpawnFrequency, false, 0.01f, 10f, o => _foodSpawner.SpawnFrequency = o);
+        AddDoubleSlider("Food Nutrition Range", _foodSpawner.MinNutrition, _foodSpawner.MaxNutrition, false, SimulationScript.Instance.CoSh.MinFoodNutrition, SimulationScript.Instance.CoSh.MaxFoodNutrition, (x,y) => { _foodSpawner.MinNutrition = x; _foodSpawner.MaxNutrition = y; });
         AddSlider("Max Food Amount", _foodSpawner.MaxFoodAmount, true, 200, 6000, o => _foodSpawner.MaxFoodAmount = (int)o);
+        AddCheckbox("Spawn Plant", _foodSpawner.SpawnPlant, o => _foodSpawner.SpawnPlant = o);
         AddCheckbox("Spawn Meat", _foodSpawner.SpawnMeat, o => _foodSpawner.SpawnMeat = o);
-        AddCheckbox("Hold Max Amount", _foodSpawner.HoldMaxAmount, o => _foodSpawner.HoldMaxAmount = o);
     }
 
     private void AddSlider(string sliderDescription, float defaultValue, bool useInt, float minValue, float maxValue, UnityAction<float> call) {
@@ -46,7 +45,7 @@ public class FoodSpawnerMenu : MonoBehaviour {
         s.value = defaultValue;
     }
 
-    /*
+    
     private void AddDoubleSlider(string sliderDescription, float defaultValueMin, float defaultValueMax, bool useInt, float minValue, float maxValue, UnityAction<float, float> call) {
         GameObject slider = Instantiate(DoubleSliderPrefab, ContentRect);
         slider.GetComponentInChildren<TMP_Text>().text = sliderDescription;
@@ -59,7 +58,7 @@ public class FoodSpawnerMenu : MonoBehaviour {
         s.OnValueChanged.AddListener(s.GetComponent<SliderUpdateScript>().OnValueChanged);
         s.LowValue = defaultValueMin;
         s.HighValue = defaultValueMax;
-    }*/
+    }
 
     private void AddCheckbox(string checkboxDescription, bool defaultValue, UnityAction<bool> call) {
         GameObject checkbox = Instantiate(CheckboxPrefab, ContentRect);

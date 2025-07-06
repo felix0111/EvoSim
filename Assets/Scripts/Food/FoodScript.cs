@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class FoodScript : Interactable {
 
@@ -11,13 +12,9 @@ public class FoodScript : Interactable {
         get => _isMeat;
         set {
             _isMeat = value;
-            if (_isMeat) {
-                _spriteRenderer.sprite = MeatSprite;
-                StartCoroutine(MeatDecomposition());
-            } else {
-                _spriteRenderer.sprite = PlantSprite;
-                StopAllCoroutines();
-            }
+            _spriteRenderer.sprite = _isMeat ? MeatSprite : PlantSprite;
+            StopAllCoroutines();
+            StartCoroutine(Decomposition());
         }
     }
     private bool _isMeat;
@@ -30,11 +27,12 @@ public class FoodScript : Interactable {
     public float NutritionalValue {
         get => _nutritionalValue;
         set {
-            if(value < SimulationScript.Instance.CoSh.MinFoodNutritíon) DestroyFood();
+            if(value < SimulationScript.Instance.CoSh.MinFoodNutrition) DestroyFood();
+            if(value > SimulationScript.Instance.CoSh.MaxFoodNutrition) value = SimulationScript.Instance.CoSh.MaxFoodNutrition;
             _nutritionalValue = value;
-            float a = Mathf.InverseLerp(SimulationScript.Instance.CoSh.MinFoodNutritíon, SimulationScript.Instance.CoSh.MaxFoodNutrition, _nutritionalValue);
-            float b = Mathf.Lerp(SimulationScript.Instance.CoSh.MinFoodRadius, SimulationScript.Instance.CoSh.MaxFoodRadius, a);
-            transform.localScale = new Vector2(b, b);
+
+            float r = NutritionToSize(value);
+            transform.localScale = new Vector2(r, r);
         }
     }
     private float _nutritionalValue;
@@ -52,16 +50,28 @@ public class FoodScript : Interactable {
 
     //resetting to default values
     void OnEnable() {
-        NutritionalValue = SimulationScript.Instance.CoSh.MinFoodNutritíon;
+        NutritionalValue = SimulationScript.Instance.CoSh.MinFoodNutrition;
         IsMeat = false;
     }
 
-    IEnumerator MeatDecomposition() {
-        yield return new WaitForSeconds(SimulationScript.Instance.CoSh.MeatDecompositionRate);
-        if(IsMeat) DestroyFood();
+    IEnumerator Decomposition() {
+        yield return new WaitForSeconds(SimulationScript.Instance.CoSh.FoodDecompositionRate);
+        DestroyFood();
     }
 
     public void DestroyFood() {
         SimulationScript.Instance.FoodPool.DespawnFood(this);
+    }
+
+    public static float NutritionToSize(float nutrition) {
+        return Mathf.Lerp(SimulationScript.Instance.CoSh.MinFoodRadius, SimulationScript.Instance.CoSh.MaxFoodRadius, Mathf.InverseLerp(SimulationScript.Instance.CoSh.MinFoodNutrition, SimulationScript.Instance.CoSh.MaxFoodNutrition, nutrition));
+    }
+
+    void OnMouseOver() {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
+        //if right clicked
+        if (!Input.GetMouseButtonDown(1)) return;
+        Debug.Log(NutritionalValue);
     }
 }

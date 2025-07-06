@@ -77,10 +77,10 @@ public class SettingsMenu : MonoBehaviour {
         AddSliderToSection("Pheromone", "Pheromone Cooldown", SimulationScript.Instance.CoSh.PheromoneCooldown, false, 0.5f, 8f, o => SimulationScript.Instance.CoSh.PheromoneCooldown = o);
         AddSliderToSection("Pheromone", "Pheromone Radius", SimulationScript.Instance.CoSh.PheromoneSmellDistance, false, 2f, 10f, o => SimulationScript.Instance.CoSh.PheromoneSmellDistance = o);
 
-        AddDoubleSliderToSection("Food", "Food Nutrition", SimulationScript.Instance.CoSh.MinFoodNutritíon, SimulationScript.Instance.CoSh.MaxFoodNutrition, false, 10f, 250f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodNutritíon = min; SimulationScript.Instance.CoSh.MaxFoodNutrition = max; });
+        AddDoubleSliderToSection("Food", "Food Nutrition", SimulationScript.Instance.CoSh.MinFoodNutrition, SimulationScript.Instance.CoSh.MaxFoodNutrition, false, 10f, 250f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodNutrition = min; SimulationScript.Instance.CoSh.MaxFoodNutrition = max; });
         AddDoubleSliderToSection("Food", "Food Size", SimulationScript.Instance.CoSh.MinFoodRadius, SimulationScript.Instance.CoSh.MaxFoodRadius, false, 0.4f, 10f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodRadius = min; SimulationScript.Instance.CoSh.MaxFoodRadius = max; });
         AddSliderToSection("Food", "Food Density", SimulationScript.Instance.CoSh.FoodDensity, false, 0.4f, 5f, o => SimulationScript.Instance.CoSh.FoodDensity = o);
-        AddSliderToSection("Food", "Meat Decomposition Rate", SimulationScript.Instance.CoSh.MeatDecompositionRate, false, 30f, 60f * 20f, o => SimulationScript.Instance.CoSh.MeatDecompositionRate = o);
+        AddSliderToSection("Food", "Meat Decomposition Rate", SimulationScript.Instance.CoSh.FoodDecompositionRate, false, 30f, 60f * 20f, o => SimulationScript.Instance.CoSh.FoodDecompositionRate = o);
         
 
     }
