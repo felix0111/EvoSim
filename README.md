@@ -63,21 +63,29 @@ An entity has a vision cone with a specific length and field of view. The vision
 An entity can attack another entity and reduce its health. When an entity dies of hunger or damage, it drops food (meat). 
 
 ### Reproduction
-Entities can get pregnant which takes a certain amount of time and also increases their hunger drain. A pregnancy starts when their neural network activates the "ActionReproduce" output neuron. Reproduction can happen asexual (happens most of the time) and sexual (only when they touch another entity at the moment a pregnancy is started (unlikely to happen). When they finish pregnancy, a new entity will spawn with a copy of the neural network of its parent. The neural network of the child has a certain chance to get mutated when it is first spawned. 
+Entities can get pregnant which takes a certain amount of time and also increases their hunger drain. A pregnancy starts when their neural network activates the "ActionReproduce" output neuron. Reproduction can happen asexual (happens most of the time) and sexual (only when they touch another entity at the moment a pregnancy is started (unlikely to happen). When pregnancy is started, the entity will consume and accumulate extra energy until a certain threshold is reached. The pregnancy is then finished and a new entity will spawn with a copy of the neural network of its parent. The neural network of the child has a certain chance to get mutated when it is first spawned.
 
 ### Pheromones
-An entity can also emit pheromones. A pheromone has a certain color (RGB) which is used to dicern pheromones from different entities. A pheromone also has an angle which tells the angle in which the emitter moved. The color of the pheromone an entity emits stays the same for its whole lifetime but may change in its child randomly by a small amount. This makes it possible for an entity to detect if an entity from another niche/species was recently at a specific location and in which direction it moved.
+An entity can emit pheromones. A pheromone has a certain color (RGB) which is used to dicern pheromones from different entities. A pheromone also has an angle which tells the angle in which the emitter moved. The color of the pheromone an entity emits stays the same for its whole lifetime but may change in its child randomly by a small amount. This makes it possible for an entity to detect if an entity from another niche/species was recently at a specific location and in which direction it moved.
 
 ### Genome
-Each entity also has a certain genome which consists of the following genes:
-entity size, entity color, pheromone color, maximum speed, maximum vision distance, field of view, the frequency of the oscillator input neuron, diet (herbivore or carnivore)
+Each entity has a genome which consists of the following genes:  
+-entity size  
+-entity color  
+-pheromone color  
+-maximum speed  
+-maximum vision distance  
+-field of view  
+-the frequency of the oscillator input neuron  
+-diet (herbivore or carnivore)
 
 Some genes like entity size also have an effect on stomach size, hunger drain, digestion rate, health, attack damage. A gene may change randomly with mutation (when a child is created).
 
 ### Some general information about the current state of the simulation
-The diet system allows for a predator-prey model but it happens only very rarely. This is probably because at the start, only harbivores are spawned as the initial population. Also the chances for the diet gene to mutate to "carnivore" AND the mutation of the correct neural network connections at the same time are very low. Spawning carnivores with a manually engineered neural network in a herbivore dominated simulation can force a predator-prey model. Entities sometimes evolve to be bigger in size so that they have more health, can store more food in their stomach and eat more food at once. 
+The diet system allows for a predator-prey model but it happens only very rarely. This is probably because at the start, only harbivores are spawned as the initial population. Also the chances for the diet gene to mutate to "carnivore" AND the mutation of the correct neural network connections at the same time are very low. Spawning carnivores with a manually engineered neural network in a herbivore dominated simulation can force a predator-prey model.  
+Entities sometimes evolve to be bigger in size so that they have more health, can store more food in their stomach and eat more food at once.
 
-Most of the time the simulation leads to the following behaviour:  
+Most of the time the simulation leads to the following behaviour of the entities:  
 -looking left and right periodically to search for food  
 -rotate in the direction of the food and move towards it  
 -move left, right or backwards when entity in sight  
