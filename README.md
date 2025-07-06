@@ -1,4 +1,4 @@
-# EvolutionSimulator2D
+# EvoSim
  
 This simulator tries to simulate the evolution of agents (called "Entity") and their brains. 
 
@@ -80,6 +80,9 @@ Each entity has a genome which consists of the following genes:
 -diet (herbivore or carnivore)
 
 Some genes like entity size also have an effect on stomach size, hunger drain, digestion rate, health, attack damage. A gene may change randomly with mutation (when a child is created).
+
+### Fitness
+Each entity has a certain fitness value at all times. The fitness basically represents the current performance of an entity. It is influenced by the entity's age, children count, amount of nutrients eaten, if attacked other entities and amount of damage taken. The fitness influences the reproduction success of a species. See also the traditional NEAT offspring calculation.
 
 ### Some general information about the current state of the simulation
 The diet system allows for a predator-prey model but it happens only very rarely. This is probably because at the start, only harbivores are spawned as the initial population. Also the chances for the diet gene to mutate to "carnivore" AND the mutation of the correct neural network connections at the same time are very low. Spawning carnivores with a manually engineered neural network in a herbivore dominated simulation can force a predator-prey model.  
