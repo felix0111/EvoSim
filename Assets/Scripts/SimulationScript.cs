@@ -22,7 +22,7 @@ public class SimulationScript : MonoBehaviour {
 
     //map
     public GameObject Map;
-    public FoodSpawnAreaScript[] SpawnAreas;
+    [HideInInspector] public FoodSpawnAreaScript[] FoodAreas;
 
     //prefabs
     public GameObject FoodPrefab, EntityPrefab, PheromonePrefab;
@@ -62,7 +62,7 @@ public class SimulationScript : MonoBehaviour {
 
     void Start() {
 
-        SpawnAreas = Map.GetComponentsInChildren<FoodSpawnAreaScript>();
+        FoodAreas = Map.GetComponentsInChildren<FoodSpawnAreaScript>();
 
         //spawn entities
         for (int i = 0; i < PlayerPrefs.GetInt("EntityCount"); i++) {
@@ -119,6 +119,14 @@ public class SimulationScript : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Picks a random point in a random food area.
+    /// </summary>
+    private Vector2 RandomSpawnPosition() {
+        var fsa = FoodAreas[Random.Range(0, FoodAreas.Length)];
+        return Utility.RandomPosInRadius(fsa.transform.position, fsa.Radius);
+    }
+
     void OnApplicationQuit() {
         Debug.Log("Quit");
         PlayerPrefs.DeleteAll();
@@ -153,11 +161,11 @@ public static class Utility {
         float minDist = float.MaxValue;
         FoodSpawnAreaScript minDistArea = null;
 
-        for (int i = 0; i < SimulationScript.Instance.SpawnAreas.Length; i++) {
-            sqr = (position - (Vector2)SimulationScript.Instance.SpawnAreas[i].transform.position).sqrMagnitude;
+        for (int i = 0; i < SimulationScript.Instance.FoodAreas.Length; i++) {
+            sqr = (position - (Vector2)SimulationScript.Instance.FoodAreas[i].transform.position).sqrMagnitude;
             if (sqr < minDist) {
                 minDist = sqr;
-                minDistArea = SimulationScript.Instance.SpawnAreas[i];
+                minDistArea = SimulationScript.Instance.FoodAreas[i];
             }
         }
 
