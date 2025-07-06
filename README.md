@@ -1,18 +1,13 @@
 # EvoSim
- 
-This simulator tries to simulate the evolution of agents (called "Entity") and their brains. 
+
+<img src="https://github.com/user-attachments/assets/38554212-24a3-42a0-ad20-6e1c48c92200" width="1000">
+
+This simulator tries to simulate the evolution of agents (called "Entity") and their brains (neural networks). 
 
 ## Neural Network
-The each entity is assigned a neural network, its brain. The neural network and its methods are based on NEAT (NeuroEvolution of Augmenting Topologies). See also my project NeuraSuite. 
+<img src="https://github.com/user-attachments/assets/e6b49b80-3bb8-40bd-96fb-03471a55ddfb" width="800">
 
-### The mutations that can happen to a neural network
--add connection  
--remove connection  
--adjust weight  
--toggle connection  
--add neuron  
--remove neuron  
--change activation function of a random neuron randomly  
+Each entity is assigned a neural network, its brain. The neural network and its methods are based on NEAT (NeuroEvolution of Augmenting Topologies). See also my project NeuraSuite. 
 
 ### The input neurons of an entities neural network
 -StomachFullness  
@@ -46,6 +41,15 @@ The each entity is assigned a neural network, its brain. The neural network and 
 -ActionVisionAngle  
 -ActionDigest  
 -ActionPheromone  
+
+### The mutations that can happen to a neural network
+-add connection  
+-remove connection  
+-adjust weight  
+-toggle connection  
+-add neuron  
+-remove neuron  
+-change activation function of a random neuron randomly  
 
 ## Simulation
 
