@@ -85,6 +85,10 @@ public class ConstantSheet
     public MutateOptions ExpandingMutateOptions = new MutateOptions(0.24f, 0.24f, 0.10f, 0.06f, 0.12f, 0.12f, 0.08f, 0.04f, default, HiddenFunctions, true);
     public static ActivationFunction[] HiddenFunctions = new[] { ActivationFunction.SIGMOID, ActivationFunction.MULT, ActivationFunction.LATCH, ActivationFunction.IDENTITY, ActivationFunction.GAUSS, ActivationFunction.ABS, ActivationFunction.BINARYSTEP };
 
+    //species
+    public float SpeciesLoggingRate = 60f;
+    public int MinSpeciesBudget = 5;
+
     //gene mutations
     public float SizeMutationFactor = 0.4f;
     public float ViewDistanceMutationFactor = 5f;
@@ -113,7 +117,6 @@ public class ConstantSheet
 
     //other
     public int MinPopulation = 20;
-    public float SpeciesLoggingRate = 60f;
     public int CheckVisionStep = 1;
     public bool RaycastVision = true;
     public bool ShowParticles = false;
