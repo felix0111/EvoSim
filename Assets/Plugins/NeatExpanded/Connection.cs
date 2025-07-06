@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EasyNNFramework.NEAT {
+namespace NeuraSuite.NeatExpanded {
 
     [Serializable]
     public struct Connection : IEquatable<Connection> {
@@ -18,11 +14,11 @@ namespace EasyNNFramework.NEAT {
         public bool Activated;
         public int TargetID, SourceID, InnovationID;
 
-        public Connection(int innovationID, int sourceID, int targetID, float weight) {
+        public Connection(int innovationID, int sourceID, int targetID, float weight, bool activated = true) {
             InnovationID = innovationID;
             SourceID = sourceID;
             TargetID = targetID;
-            Activated = true;
+            Activated = activated;
             _weight = weight;
         }
 

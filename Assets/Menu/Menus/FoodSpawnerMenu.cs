@@ -26,9 +26,11 @@ public class FoodSpawnerMenu : MonoBehaviour {
             Destroy(rectTransform.gameObject);
         }
 
-        AddSlider("Spawn Frequency", _foodSpawner.SpawnFrequency, false, 0.1f, 10f, o => _foodSpawner.SpawnFrequency = o);
-        AddSlider("Spawn Count", _foodSpawner.MaxSpawnCount, true, 200, 8000, o => _foodSpawner.MaxSpawnCount = (int)o);
+        AddSlider("Radius", _foodSpawner.Radius, true, 200, 1500, o => _foodSpawner.Radius = o);
+        AddSlider("Spawn Frequency", _foodSpawner.SpawnFrequency, false, 0.01f, 10f, o => _foodSpawner.SpawnFrequency = o);
+        AddSlider("Max Food Amount", _foodSpawner.MaxFoodAmount, true, 200, 6000, o => _foodSpawner.MaxFoodAmount = (int)o);
         AddCheckbox("Spawn Meat", _foodSpawner.SpawnMeat, o => _foodSpawner.SpawnMeat = o);
+        AddCheckbox("Hold Max Amount", _foodSpawner.HoldMaxAmount, o => _foodSpawner.HoldMaxAmount = o);
     }
 
     private void AddSlider(string sliderDescription, float defaultValue, bool useInt, float minValue, float maxValue, UnityAction<float> call) {

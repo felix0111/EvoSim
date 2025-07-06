@@ -11,9 +11,10 @@ public class FoodSpawnAreaScript : MonoBehaviour {
 
     private SpriteRenderer _spriteRenderer;
 
+    public int MaxFoodAmount;
     public float SpawnFrequency;
     public bool SpawnMeat;
-    public int MaxSpawnCount;
+    public bool HoldMaxAmount;
 
     public int SpawnCount;
 
@@ -22,6 +23,7 @@ public class FoodSpawnAreaScript : MonoBehaviour {
     }
 
     void Start() {
+        StartCoroutine(CheckAmountRoutine());
         StartCoroutine(SpawnRoutine());
     }
 
@@ -30,16 +32,33 @@ public class FoodSpawnAreaScript : MonoBehaviour {
         while (true) {
             yield return new WaitForSeconds(SpawnFrequency);
 
-            if (SpawnCount >= MaxSpawnCount) {
-                SpawnCount = Physics2D.OverlapCircleAll(transform.position, Radius, LayerMask.GetMask("Food")).Length;
-                if (SpawnCount >= MaxSpawnCount) continue;  //if still enough food in radius, don't spawn new
+            if (SpawnCount >= MaxFoodAmount) continue;
+
+            if (HoldMaxAmount) {
+
+                int amountLeft = MaxFoodAmount - SpawnCount;
+                for (int i = 0; i < amountLeft; i++) {
+                    Vector2 pos = Utility.RandomPosInRadius(transform.position, Radius);
+                    if (Utility.IsCollidingOnPos(pos, SimulationScript.Instance.CoSh.MaxFoodRadius, LayerMask.GetMask("Food", "Entity"))) continue;
+
+                    SimulationScript.Instance.FoodPool.SpawnFood(pos, Utility.RandomNutritionalValue, SpawnMeat);
+                    SpawnCount++;
+                }
+
+            } else {
+                Vector2 pos = Utility.RandomPosInRadius(transform.position, Radius);
+                if (Utility.IsCollidingOnPos(pos, SimulationScript.Instance.CoSh.MaxFoodRadius, LayerMask.GetMask("Food", "Entity"))) continue;
+
+                SimulationScript.Instance.FoodPool.SpawnFood(pos, Utility.RandomNutritionalValue, SpawnMeat);
+                SpawnCount++;
             }
+        }
+    }
 
-            Vector2 pos = Utility.RandomPosInRadius(transform.position, Radius);
-            if(Utility.IsCollidingOnPos(pos, SimulationScript.Instance.CoSh.MaxFoodRadius, LayerMask.GetMask("Food", "Entity"))) continue;
-
-            SimulationScript.Instance.FoodPool.SpawnFood(pos, Utility.RandomNutritionalValue, SpawnMeat);
-            SpawnCount++;
+    IEnumerator CheckAmountRoutine() {
+        while (true) {
+            yield return new WaitForSeconds(15f);
+            SpawnCount = Physics2D.OverlapCircleAll(transform.position, Radius, LayerMask.GetMask("Food")).Length;
         }
     }
 

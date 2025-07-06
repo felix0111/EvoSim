@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
-using static System.Collections.Specialized.BitVector32;
 
 public class SettingsMenu : MonoBehaviour {
 
@@ -27,10 +25,13 @@ public class SettingsMenu : MonoBehaviour {
         AddSection("Pheromone");
         AddSection("Food");
 
+        AddSliderToSection("Simulation", "Minimum Population", SimulationScript.Instance.CoSh.MinPopulation, true, 10, 150, o => SimulationScript.Instance.CoSh.MinPopulation = (int)o);
         AddSliderToSection("Simulation", "Check for Improvement Rate", SimulationScript.Instance.CoSh.CheckImprovementRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.CheckImprovementRate = o);
         AddSliderToSection("Simulation", "Species Logging Rate", SimulationScript.Instance.CoSh.SpeciesLoggingRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.SpeciesLoggingRate = o);
         AddSliderToSection("Simulation", "Vision Step", SimulationScript.Instance.CoSh.CheckVisionStep, true, 1, 8, o => SimulationScript.Instance.CoSh.CheckVisionStep = (int)o);
+        AddCheckboxToSection("Simulation", "Raycast Vision", SimulationScript.Instance.CoSh.RaycastVision, o => SimulationScript.Instance.CoSh.RaycastVision = o);
         AddCheckboxToSection("Simulation", "Show Particles", SimulationScript.Instance.CoSh.ShowParticles, o => SimulationScript.Instance.CoSh.ShowParticles = o);
+        AddCheckboxToSection("Simulation", "Rotate to main Area", SimulationScript.Instance.CoSh.RotateToMainArea, o => SimulationScript.Instance.CoSh.RotateToMainArea = o);
 
         AddDoubleSliderToSection("Entity", "Size", SimulationScript.Instance.CoSh.MinEntitySize, SimulationScript.Instance.CoSh.MaxEntitySize, false, 0.5f, 15f, (min, max) => { SimulationScript.Instance.CoSh.MinEntitySize = min; SimulationScript.Instance.CoSh.MaxEntitySize = max; });
         AddSliderToSection("Entity", "Max. Age", SimulationScript.Instance.CoSh.MaxAge, true, 10, 1000, o => SimulationScript.Instance.CoSh.MaxAge = (int)o);
@@ -40,19 +41,18 @@ public class SettingsMenu : MonoBehaviour {
         AddDoubleSliderToSection("Entity", "Stomach Size", SimulationScript.Instance.CoSh.MinStomachSize, SimulationScript.Instance.CoSh.MaxStomachSize, false, 5f, 1000f, (min, max) => { SimulationScript.Instance.CoSh.MinStomachSize = min; SimulationScript.Instance.CoSh.MaxStomachSize = max; });
         AddSliderToSection("Entity", "Healing Rate", SimulationScript.Instance.CoSh.HealingRate, false, 0f, 100f, o => SimulationScript.Instance.CoSh.HealingRate = o);
         AddSliderToSection("Entity", "Min. Energy to Heal", SimulationScript.Instance.CoSh.MinEnergyToHeal, false, 0f, 100f, o => SimulationScript.Instance.CoSh.MinEnergyToHeal = o);
-        AddDoubleSliderToSection("Entity", "View Distance", SimulationScript.Instance.CoSh.MinViewDistance, SimulationScript.Instance.CoSh.MaxViewDistance, false, 1f, 40f, (min, max) => { SimulationScript.Instance.CoSh.MinViewDistance = min; SimulationScript.Instance.CoSh.MaxViewDistance = max; });
+        AddDoubleSliderToSection("Entity", "View Distance", SimulationScript.Instance.CoSh.MinViewDistance, SimulationScript.Instance.CoSh.MaxViewDistance, false, 5f, 60f, (min, max) => { SimulationScript.Instance.CoSh.MinViewDistance = min; SimulationScript.Instance.CoSh.MaxViewDistance = max; });
         AddSliderToSection("Entity", "Max. Vision Angle", SimulationScript.Instance.CoSh.MaxVisionAngle, false, 1f, 89f, o => SimulationScript.Instance.CoSh.MaxVisionAngle = o);
-        AddSliderToSection("Entity", "Max. Field Of View", SimulationScript.Instance.CoSh.MaxFieldOfView, false, 1f, 89f, o => SimulationScript.Instance.CoSh.MaxFieldOfView = o);
+        AddDoubleSliderToSection("Entity", "Field Of View", SimulationScript.Instance.CoSh.MinFieldOfView, SimulationScript.Instance.CoSh.MaxFieldOfView, false, 1f, 89f, (min, max) => { SimulationScript.Instance.CoSh.MinFieldOfView = min; SimulationScript.Instance.CoSh.MaxFieldOfView = max; });
         AddDoubleSliderToSection("Entity", "Movement Speed", SimulationScript.Instance.CoSh.MinMovementSpeed, SimulationScript.Instance.CoSh.MaxMovementSpeed, false, 1f, 200f, (min, max) => { SimulationScript.Instance.CoSh.MinMovementSpeed = min; SimulationScript.Instance.CoSh.MaxMovementSpeed = max; });
         AddSliderToSection("Entity", "Rotation Speed", SimulationScript.Instance.CoSh.MaxRotationSpeed, false, 1f, 8f, o => SimulationScript.Instance.CoSh.MaxRotationSpeed = o);
 
         AddSliderToSection("Eating & Digestion", "Eating Distance", SimulationScript.Instance.CoSh.MaxEatDistance, false, 0.2f, 5f, o => SimulationScript.Instance.CoSh.MaxEatDistance = o);
         AddSliderToSection("Eating & Digestion", "Eating Cooldown", SimulationScript.Instance.CoSh.EatCooldown, false, 0.1f, 5f, o => SimulationScript.Instance.CoSh.EatCooldown = o);
-        AddDoubleSliderToSection("Eating & Digestion", "Nutrition Intake", SimulationScript.Instance.CoSh.MinNutrientIntake, SimulationScript.Instance.CoSh.MaxNutrientIntake, false, 1f, 250f, (min, max) => { SimulationScript.Instance.CoSh.MinNutrientIntake = min; SimulationScript.Instance.CoSh.MaxNutrientIntake = max; });
+        AddDoubleSliderToSection("Eating & Digestion", "Nutrition Intake", SimulationScript.Instance.CoSh.MinNutrientIntake, SimulationScript.Instance.CoSh.MaxNutrientIntake, false, 1f, 200f, (min, max) => { SimulationScript.Instance.CoSh.MinNutrientIntake = min; SimulationScript.Instance.CoSh.MaxNutrientIntake = max; });
         AddDoubleSliderToSection("Eating & Digestion", "Digestion Rate", SimulationScript.Instance.CoSh.MinDigestionRate, SimulationScript.Instance.CoSh.MaxDigestionRate, false, 0.2f, 10f, (min, max) => { SimulationScript.Instance.CoSh.MinDigestionRate = min; SimulationScript.Instance.CoSh.MaxDigestionRate = max; });
         AddSliderToSection("Eating & Digestion", "Plant To Energy Factor", SimulationScript.Instance.CoSh.PlantToEnergyFactor, false, 0.1f, 5f, o => SimulationScript.Instance.CoSh.PlantToEnergyFactor = o);
         AddSliderToSection("Eating & Digestion", "Meat To Energy Factor", SimulationScript.Instance.CoSh.MeatToEnergyFactor, false, 0.1f, 5f, o => SimulationScript.Instance.CoSh.MeatToEnergyFactor = o);
-
 
         AddDoubleSliderToSection("Energy Consumption", "Base Energy Consumption", SimulationScript.Instance.CoSh.MinBaseEnergyConsumption, SimulationScript.Instance.CoSh.MaxBaseEnergyConsumption, false, 0f, 5f, (min, max) => { SimulationScript.Instance.CoSh.MinBaseEnergyConsumption = min; SimulationScript.Instance.CoSh.MaxBaseEnergyConsumption = max; });
         AddSliderToSection("Energy Consumption", "Moving Energy Consumption", SimulationScript.Instance.CoSh.MoveEnergyConsumption, false, 0f, 5f, o => SimulationScript.Instance.CoSh.MoveEnergyConsumption = o);
@@ -60,8 +60,10 @@ public class SettingsMenu : MonoBehaviour {
         AddSliderToSection("Energy Consumption", "Pheromone Energy Consumption", SimulationScript.Instance.CoSh.PheromoneEnergyConsumption, false, 0f, 5f, o => SimulationScript.Instance.CoSh.PheromoneEnergyConsumption = o);
         AddSliderToSection("Energy Consumption", "Energy Consumption Multiplier", SimulationScript.Instance.CoSh.EnergyConsumptionMultiplier, false, 0f, 5f, o => SimulationScript.Instance.CoSh.EnergyConsumptionMultiplier = o);
 
+        AddCheckboxToSection("Reproduction", "Sexual Reproduction", false, o => SimulationScript.Instance.CoSh.SexualReproduction = o);
         AddSliderToSection("Reproduction", "Max. Child Mutations", SimulationScript.Instance.CoSh.MaxChildMutations, true, 0, 20, o => SimulationScript.Instance.CoSh.MaxChildMutations = (int)o);
         AddSliderToSection("Reproduction", "Child Mutation Chance", SimulationScript.Instance.CoSh.ChildMutationChance, false, 0f, 1f, o => SimulationScript.Instance.CoSh.ChildMutationChance = o);
+        AddSliderToSection("Reproduction", "Minimum Reproduction Age", SimulationScript.Instance.CoSh.MinAgeToReproduce, true, 1, 99, o => SimulationScript.Instance.CoSh.MinAgeToReproduce = (int)o);
         AddDoubleSliderToSection("Reproduction", "Energy To Reproduce", SimulationScript.Instance.CoSh.MinEnergyToReproduce, SimulationScript.Instance.CoSh.MaxEnergyToReproduce, false, 10f, 1000f, (min, max) => { SimulationScript.Instance.CoSh.MinEnergyToReproduce = min; SimulationScript.Instance.CoSh.MaxEnergyToReproduce = max; });
         AddSliderToSection("Reproduction", "Time To Reproduce", SimulationScript.Instance.CoSh.TimeToReproduce, false, 60f, 60f * 10f, o => SimulationScript.Instance.CoSh.TimeToReproduce = o);
 

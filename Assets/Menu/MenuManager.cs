@@ -79,13 +79,20 @@ public class MenuManager : MonoBehaviour {
     }
 
     IEnumerator UpdateSpeciesMenu() {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
+
+        SpeciesMenu.LogSpecies(_loggingStep);
+        _loggingStep++;
+        SpeciesMenu.LogSpecies(_loggingStep);
+        _loggingStep++;
 
         while (true) {
+            yield return new WaitForSeconds(SimulationScript.Instance.CoSh.SpeciesLoggingRate);
+
             SpeciesMenu.LogSpecies(_loggingStep);
             if(SpeciesMenu.isActiveAndEnabled) SpeciesMenu.UpdateMenu();
             _loggingStep++;
-            yield return new WaitForSeconds(SimulationScript.Instance.CoSh.SpeciesLoggingRate);
+            
         }
     }
 

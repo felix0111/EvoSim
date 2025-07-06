@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class FoodPool {
 
     private FoodScript[] _allFoods;
-    private List<FoodScript> _activeFoods = new ();
+    public List<FoodScript> ActiveFoods = new ();
 
     private readonly int _foodCount;
 
@@ -40,13 +38,13 @@ public class FoodPool {
         fs.Density = SimulationScript.Instance.CoSh.FoodDensity;
         fs.NutritionalValue = nutValue;
 
-        _activeFoods.Add(fs);
+        ActiveFoods.Add(fs);
 
         return fs;
     }
 
     public void DespawnFood(FoodScript fs) {
-        _activeFoods.Remove(fs);
+        ActiveFoods.Remove(fs);
         fs.gameObject.SetActive(false);
     }
 

@@ -1,3 +1,4 @@
+using NeuraSuite.NeatExpanded;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -10,6 +11,8 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class EntityMenu : MonoBehaviour {
 
     public NNVisualizerMenu NNVisualizerMenu;
+    public GeneMenu GeneMenu;
+
     public TMP_Text InfoText;
     public Material LineRendererMaterial;
 
@@ -42,6 +45,7 @@ public class EntityMenu : MonoBehaviour {
     public void UpdateEntity(EntityScript es) {
         _entity = es;
         if(NNVisualizerMenu.isActiveAndEnabled) NNVisualizerMenu.UpdateEntity(es);
+        if(GeneMenu.isActiveAndEnabled) GeneMenu.UpdateMenu(es);
     }
 
     void FixedUpdate() {
@@ -60,13 +64,13 @@ public class EntityMenu : MonoBehaviour {
         if (_leftViewConeLine == null) _leftViewConeLine = Utility.MakeVisualizerLine(transform, Color.magenta, LineRendererMaterial);
         if (_rightViewConeLine == null) _rightViewConeLine = Utility.MakeVisualizerLine(transform, Color.magenta, LineRendererMaterial);
 
-        Vector2 dir = (Quaternion.Euler(0f, 0f, _entity.VisionAngle - _entity.FieldOfView) * _entity.transform.up).normalized;
+        Vector2 dir = (Quaternion.Euler(0f, 0f, _entity.VisionAngle - _entity.Gene.FieldOfView) * _entity.transform.up).normalized;
         Vector2 startPos = _entity.transform.position;
         Vector2 endPos = startPos + dir * (_entity.Gene.ViewDistance + _entity.Radius);
         _leftViewConeLine.SetPosition(0, startPos);
         _leftViewConeLine.SetPosition(1, endPos);
 
-        dir = (Quaternion.Euler(0f, 0f, _entity.VisionAngle + _entity.FieldOfView) * _entity.transform.up).normalized;
+        dir = (Quaternion.Euler(0f, 0f, _entity.VisionAngle + _entity.Gene.FieldOfView) * _entity.transform.up).normalized;
         endPos = startPos + dir * (_entity.Gene.ViewDistance + _entity.Radius);
         _rightViewConeLine.SetPosition(0, startPos);
         _rightViewConeLine.SetPosition(1, endPos);
@@ -75,25 +79,22 @@ public class EntityMenu : MonoBehaviour {
     private void UpdateInfoText() {
         InfoText.text = _entity.gameObject.name + ": <br>";
         InfoText.text += "Age: " + _entity.Age + "<br>";
-        InfoText.text += "Health: " + _entity.Health.ToString("F1") + "<br>";
         InfoText.text += "Generation: " + _entity.Gene.Generation + "<br>";
         InfoText.text += "Diet: " + (_entity.Gene.Diet == EntityDiet.Herbivore ? "Herbivore" : "Carnivore") + "<br>";
-        InfoText.text += "Stomach Energy: " + _entity.EnergyHandler.AmountInStomach.ToString("F1") + "<br>";
-        InfoText.text += "Active Energy: " + _entity.EnergyHandler.ActiveEnergy.ToString("F1") + "<br>";
-        InfoText.text += "Is Reproducing: " + _entity.EnergyHandler.IsReproducing + "<br>";
-        InfoText.text += "Reproduction Energy: " + _entity.EnergyHandler.ReproductionEnergy.ToString("F1") + "<br>";
+        InfoText.text += "Is Pregnant: " + _entity.IsPregnant + "<br>";
+        InfoText.text += "Pregnancy Progress: " + _entity.EnergyHandler.ReproductionEnergy / _entity.ScaledEnergyToReproduce + "<br>";
         InfoText.text += "Energy Consumption: " + _entity.EnergyHandler.EnergyConsumption.ToString("F1") + "<br>";
         InfoText.text += "Oscillator Frequency: " + _entity.Gene.OscillatorFrequency.ToString("F1") + "<br>";
         InfoText.text += "Entity Size: " + _entity.Gene.EntitySize.ToString("F1") + "<br>";
         InfoText.text += "View Distance: " + _entity.Gene.ViewDistance.ToString("F1") + "<br>";
         InfoText.text += "Vision Angle: " + _entity.VisionAngle.ToString("F1") + "<br>";
-        InfoText.text += "Field of View: " + _entity.FieldOfView.ToString("F1") + "<br>";
-        InfoText.text += "Pos: " + _entity.VisionHandler.AvgPlantPosition + "<br>";
-        InfoText.text += "Dist: " + _entity.VisionHandler.AvgPlantDistance + "<br>";
+        InfoText.text += "Field of View: " + _entity.Gene.FieldOfView.ToString("F1") + "<br>";
         InfoText.text += "Amount in View: " + _entity.VisionHandler.InVisionCone.Count + "<br>";
-        InfoText.text += "Velocity: " + _entity.Rigidbody.velocity.ToString("F1") + "<br>";
+        InfoText.text += "Velocity: " + _entity.Rigidbody.linearVelocity.ToString("F1") + "<br>";
         InfoText.text += "Species: " + _entity.Network.SpeciesID + "<br>";
-        InfoText.text += "Fitness: " + _entity.Network.Fitness + "<br>";
+        InfoText.text += "Offspring Budget: " + (SimulationScript.Instance.OffspringBudget.TryGetValue(_entity.Species.SpeciesID, out var value) ? value : "undefined") + "<br>";
+        InfoText.text += "Fitness: " + _entity.Fitness + "<br>";
+        InfoText.text += "Adjusted Fitness: " + _entity.Fitness / _entity.Species.AllNetworks.Count + "<br>";
         InfoText.text += "Is mutated: " + _entity.IsMutated + "<br>";
     }
 
@@ -113,8 +114,15 @@ public class EntityMenu : MonoBehaviour {
         if (NNVisualizerMenu.isActiveAndEnabled) {
             NNVisualizerMenu.gameObject.SetActive(false);
         } else {
-            NNVisualizerMenu.gameObject.SetActive(true);
             NNVisualizerMenu.OpenMenu(_entity);
+        }
+    }
+
+    public void OnGeneMenuButton() {
+        if (GeneMenu.isActiveAndEnabled){
+            GeneMenu.gameObject.SetActive(false);
+        } else {
+            GeneMenu.OpenMenu(_entity);
         }
     }
 
@@ -123,6 +131,7 @@ public class EntityMenu : MonoBehaviour {
     }
 
     public void OnReproduceButton() {
+        _entity.SexualPartner = new SerializableEntity(_entity);
         _entity.Reproduce();
     }
 
@@ -132,7 +141,8 @@ public class EntityMenu : MonoBehaviour {
 
     public void OnDisable() {
         if(NNVisualizerMenu.isActiveAndEnabled) NNVisualizerMenu.gameObject.SetActive(false);
-        if(_leftViewConeLine != null) Destroy(_leftViewConeLine.gameObject);
+        if(GeneMenu.isActiveAndEnabled) GeneMenu.gameObject.SetActive(false);
+        if(_leftViewConeLine != null) Destroy(_leftViewConeLine.gameObject); //TODO ???
     }
     
 }

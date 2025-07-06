@@ -1,17 +1,34 @@
 using System.Collections;
-using System.Collections.Generic;
-using EasyNNFramework.NEAT;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HUDMenu : MonoBehaviour {
 
-    public TMP_Text BestEntityText;
+    public TMP_Text BestEntityText, GeneralInfoText;
 
+    void Start() {
+        StartCoroutine(UpdateTextsRoutine());
+    }
+
+    private int _fps = 0;
     void Update() {
-        BestEntityText.text = "Best Entity: " + SimulationScript.Instance.BestEntity.Item1;
-        BestEntityText.text += "<br>" + (SimulationScript.Instance.CoSh.AdaptionPhase ? "In Adaption-Phase" : "In Expanding-Phase");
+        _fps = Mathf.CeilToInt(1f / Time.unscaledDeltaTime);
+    }
+
+    IEnumerator UpdateTextsRoutine() {
+        while (true) {
+            yield return new WaitForSeconds(2f);
+
+            BestEntityText.text = "Best Entity: " + SimulationScript.Instance.BestEntity.Item1;
+            BestEntityText.text += "<br>" + (SimulationScript.Instance.CoSh.AdaptionPhase ? "In Adaption-Phase" : "In Expanding-Phase");
+
+            GeneralInfoText.text = "FPS: " + _fps;
+            GeneralInfoText.text += "<br>Entity Amount: " + SimulationScript.Instance.EntityPool.ActiveEntities.Count + "/" + 400;
+            GeneralInfoText.text += "<br>Food Amount: " + SimulationScript.Instance.FoodPool.ActiveFoods.Count + "/" + 2500;
+            GeneralInfoText.text += "<br>Pheromone Amount: " + SimulationScript.Instance.PheromonePool.ActivePheromones.Count + "/" + 1500;
+
+        }
     }
 
     public void OnTimeSliderChanged(Slider slider) {

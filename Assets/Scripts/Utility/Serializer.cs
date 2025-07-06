@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Linq;
 using SimpleFileBrowser;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public static class Serializer {
     /// <summary>

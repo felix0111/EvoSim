@@ -12,40 +12,47 @@ public class VisionHandler {
 
     public bool SameSpeciesInView;
 
+    public Collider2D InFrontCollider;
     public List<Collider2D> InVisionCone = new (64);
     private Collider2D[] _colliderBuffer = new Collider2D[64];
     private int _colliderBufferSize = 0;
     private RaycastHit2D[] _raycastBuffer = new RaycastHit2D[1];
 
-    private ContactFilter2D VisionFilter;
+    private ContactFilter2D _visionFilter;
 
     private readonly EntityScript _entity;
 
     public VisionHandler(EntityScript entity, int layerMask) {
         _entity = entity;
-        VisionFilter = new ContactFilter2D {
+        _visionFilter = new ContactFilter2D {
             layerMask = layerMask
         };
     }
 
     public void UpdateVision(Vector2 direction, float fovAngle, bool raycastCheck, bool overlap) {
-        if(overlap) _colliderBufferSize = Physics2D.OverlapCircle(_entity.transform.position, _entity.Gene.ViewDistance + _entity.Radius, VisionFilter, _colliderBuffer);
+        if(overlap) _colliderBufferSize = Physics2D.OverlapCircle(_entity.transform.position, _entity.Gene.ViewDistance + _entity.Radius, _visionFilter, _colliderBuffer);
 
         InVisionCone.Clear();
+
         for (int i = 0; i < _colliderBufferSize; i++) {
             if (!_colliderBuffer[i].isActiveAndEnabled || _colliderBuffer[i] == _entity.Collider || !IsInFOV(direction, _colliderBuffer[i].transform.position, fovAngle, out float colliderAngle)) continue;
 
             if (raycastCheck) {
-                int x = Physics2D.Raycast(_entity.transform.position, (Quaternion.Euler(0f, 0f, colliderAngle) * _entity.transform.up).normalized, VisionFilter, _raycastBuffer, _entity.Gene.ViewDistance + _entity.Radius);
-                if(x == 0) Debug.LogError("Could not raycast vision!");
-
+                int x = Physics2D.Raycast(_entity.transform.position, (Quaternion.Euler(0f, 0f, colliderAngle) * _entity.transform.up).normalized, _visionFilter, _raycastBuffer, _entity.Gene.ViewDistance + _entity.Radius);
+                
+                //Debug.DrawRay(_entity.transform.position, (Quaternion.Euler(0f, 0f, colliderAngle) * _entity.transform.up).normalized * (_entity.Gene.ViewDistance + _entity.Radius), Color.red);
+                //if (x == 0) Debug.LogWarning("Could not raycast vision! " + _entity.gameObject.name + " : " + _colliderBuffer[i].name);
+                
                 //don't add collider if view is obstructed
-                if (_raycastBuffer[0].collider != _colliderBuffer[i]) continue;
+                if (x == 0 || _raycastBuffer[0].collider != _colliderBuffer[i]) continue;
             }
             InVisionCone.Add(_colliderBuffer[i]);
         }
 
         ProcessVisionCone();
+
+        RaycastHit2D hit = Physics2D.Raycast((Vector2)_entity.transform.position, (Vector2)_entity.transform.up, Mathf.Max(SimulationScript.Instance.CoSh.MaxEatDistance, SimulationScript.Instance.CoSh.MaxAttackDistance) + _entity.Radius, _visionFilter.layerMask);
+        InFrontCollider = hit.collider;
     }
 
     private void ProcessVisionCone() {
@@ -56,9 +63,9 @@ public class VisionHandler {
         AvgPlantPosition = Vector2.zero;
         AvgMeatPosition = Vector2.zero;
         AvgEntityPosition = Vector2.zero;
-        AvgPlantDistance = 0f;
-        AvgMeatDistance = 0f;
-        AvgEntityDistance = 0f;
+        AvgPlantDistance = float.MaxValue;
+        AvgMeatDistance = float.MaxValue;
+        AvgEntityDistance = float.MaxValue;
 
         SameSpeciesInView = false;
 

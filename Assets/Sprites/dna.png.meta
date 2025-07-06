@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 26bac15b50fb27049914d6624a5c1ce9
+guid: 2522f0056e7c7d3409c299c7fd1210ab
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -459963501152257347
-    second: neurales-netzwerk_0
+      213: -721253127325188216
+    second: dna_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: neurales-netzwerk_0
+      name: dna_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 2
-        width: 503
-        height: 506
+        x: 10
+        y: 10
+        width: 280
+        height: 280
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dbabc28f1a1ed99f0800000000000000
-      internalID: -459963501152257347
+      spriteID: 88f74a02a189df5f0800000000000000
+      internalID: -721253127325188216
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      neurales-netzwerk_0: -459963501152257347
+      dna_0: -721253127325188216
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

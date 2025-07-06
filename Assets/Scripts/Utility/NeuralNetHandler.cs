@@ -1,5 +1,5 @@
 using System;
-using EasyNNFramework.NEAT;
+using NeuraSuite.NeatExpanded;
 using UnityEngine;
 
 public class NeuralNetHandler {
@@ -22,14 +22,15 @@ public class NeuralNetHandler {
         }
 
         //vision
-        inputValuesBuffer[(int)InputNeuron.AnglePlants] = (Vector2.SignedAngle(_entityTransform.up, _entity.VisionHandler.AvgPlantPosition - (Vector2)_entityTransform.position) - _entity.VisionAngle) / _entity.FieldOfView;
-        inputValuesBuffer[(int)InputNeuron.DistancePlants] = Mathf.InverseLerp(0f, _entity.Gene.ViewDistance, _entity.VisionHandler.AvgPlantDistance - _entity.Radius);
+        float maxPossibleAngle = SimulationScript.Instance.CoSh.MaxVisionAngle + SimulationScript.Instance.CoSh.MaxFieldOfView / 2f;
+        inputValuesBuffer[(int)InputNeuron.AnglePlants] = Vector2.SignedAngle(_entityTransform.up, _entity.VisionHandler.AvgPlantPosition - (Vector2)_entityTransform.position) / maxPossibleAngle;
+        inputValuesBuffer[(int)InputNeuron.DistancePlants] = 1f - Mathf.InverseLerp(0f, _entity.Gene.ViewDistance, _entity.VisionHandler.AvgPlantDistance - _entity.Radius);
 
-        inputValuesBuffer[(int)InputNeuron.AngleMeats] = (Vector2.SignedAngle(_entityTransform.up, _entity.VisionHandler.AvgMeatPosition - (Vector2)_entityTransform.position) - _entity.VisionAngle) / _entity.FieldOfView;
-        inputValuesBuffer[(int)InputNeuron.DistanceMeats] = Mathf.InverseLerp(0f, _entity.Gene.ViewDistance, _entity.VisionHandler.AvgMeatDistance - _entity.Radius);
+        inputValuesBuffer[(int)InputNeuron.AngleMeats] = Vector2.SignedAngle(_entityTransform.up, _entity.VisionHandler.AvgMeatPosition - (Vector2)_entityTransform.position) / maxPossibleAngle;
+        inputValuesBuffer[(int)InputNeuron.DistanceMeats] = 1f - Mathf.InverseLerp(0f, _entity.Gene.ViewDistance, _entity.VisionHandler.AvgMeatDistance - _entity.Radius);
 
-        inputValuesBuffer[(int)InputNeuron.AngleEntities] = (Vector2.SignedAngle(_entityTransform.up, _entity.VisionHandler.AvgEntityPosition - (Vector2)_entityTransform.position) - _entity.VisionAngle) / _entity.FieldOfView;
-        inputValuesBuffer[(int)InputNeuron.DistanceEntities] = Mathf.InverseLerp(0f, _entity.Gene.ViewDistance, _entity.VisionHandler.AvgEntityDistance - _entity.Radius);
+        inputValuesBuffer[(int)InputNeuron.AngleEntities] = Vector2.SignedAngle(_entityTransform.up, _entity.VisionHandler.AvgEntityPosition - (Vector2)_entityTransform.position) / maxPossibleAngle;
+        inputValuesBuffer[(int)InputNeuron.DistanceEntities] = 1f - Mathf.InverseLerp(0f, _entity.Gene.ViewDistance, _entity.VisionHandler.AvgEntityDistance - _entity.Radius);
         inputValuesBuffer[(int)InputNeuron.SameSpeciesInView] = _entity.VisionHandler.SameSpeciesInView ? 1f : 0f;
 
         //self information
@@ -37,6 +38,7 @@ public class NeuralNetHandler {
         inputValuesBuffer[(int)InputNeuron.Energy] = Mathf.InverseLerp(0f, _entity.ScaledMaxEnergy, _entity.EnergyHandler.ActiveEnergy);
         inputValuesBuffer[(int)InputNeuron.Health] = Mathf.InverseLerp(0f, _entity.ScaledMaxHealth, _entity.Health);
         inputValuesBuffer[(int)InputNeuron.Age] = Mathf.InverseLerp(0f, SimulationScript.Instance.CoSh.MaxAge, _entity.Age);
+        inputValuesBuffer[(int)InputNeuron.IsPregnant] = _entity.IsPregnant ? 1f : 0f;
 
         //pheromone information
         PheromoneScript ps = _entity.Smell();
@@ -48,7 +50,6 @@ public class NeuralNetHandler {
         }
         
         //misc
-        inputValuesBuffer[(int)InputNeuron.AngleToNearestSource] = Vector2.SignedAngle(_entityTransform.up, Utility.GetNearestArea(_entityTransform.position).transform.position - _entityTransform.position) / 180f;
         inputValuesBuffer[(int)InputNeuron.IsColliding] = _entity.CollisionWatcher.IsColliding(_isCollidingLayers) ? 1f : 0f;
         inputValuesBuffer[(int)InputNeuron.Bias] = 1f;
         inputValuesBuffer[(int)InputNeuron.Random] = UnityEngine.Random.Range(-1f, 1f);
@@ -63,11 +64,10 @@ public class NeuralNetHandler {
 
         //interpret vision
         _entity.VisionAngle = outputValuesBuffer[(int)ActionNeuron.ActionVisionAngle] * SimulationScript.Instance.CoSh.MaxVisionAngle;
-        _entity.FieldOfView = outputValuesBuffer[(int)ActionNeuron.ActionFieldOfView] * SimulationScript.Instance.CoSh.MaxFieldOfView;
 
         //rotation neuron
         _entity.AimedRotationDir = outputValuesBuffer[(int)ActionNeuron.ActionRotate];
-
+        
         //pheromone neuron
         if (outputValuesBuffer[(int)ActionNeuron.ActionPheromone] >= SimulationScript.Instance.CoSh.ActionThreshold) {
             _entity.ProducePheromone();
@@ -88,13 +88,23 @@ public class NeuralNetHandler {
             _entity.EnergyHandler.Digest();
         }
 
-    }
+        //want to reproduce
+        if (outputValuesBuffer[(int)ActionNeuron.ActionReproduce] >= SimulationScript.Instance.CoSh.ActionThreshold && !_entity.IsPregnant && _entity.Age >= SimulationScript.Instance.CoSh.MinAgeToReproduce) {
 
-    public static float GetMutationFactorSum() {
-        return SimulationScript.Instance.CoSh.AddConnectionChance + SimulationScript.Instance.CoSh.ToggleConnectionChance +
-               SimulationScript.Instance.CoSh.RemoveConnectionChance + SimulationScript.Instance.CoSh.AddNeuronChance +
-               SimulationScript.Instance.CoSh.RemoveNeuronChance + SimulationScript.Instance.CoSh.RandomFunctionChance +
-               SimulationScript.Instance.CoSh.AddRecurrentConnectionChance + SimulationScript.Instance.CoSh.AdjustWeightChance;
+            if (SimulationScript.Instance.CoSh.SexualReproduction) {
+                //use when sexual reproduction
+                var touching = _entity.CollisionWatcher.First<EntityScript>();
+                if (touching == null || touching.IsPregnant) return;
+
+                _entity.SexualPartner = new SerializableEntity(touching);
+                _entity.IsPregnant = true;
+            } else {
+                //use when asexual reproduction
+                _entity.SexualPartner = new SerializableEntity(_entity);
+                _entity.IsPregnant = true;
+            }
+        }
+
     }
 
     public static ActivationFunction GetNeuronFunction(ActionNeuron an) {
@@ -105,7 +115,6 @@ public class NeuralNetHandler {
             case ActionNeuron.ActionMoveRight: return ActivationFunction.TANH;
             case ActionNeuron.ActionRotate: return ActivationFunction.TANH;
             case ActionNeuron.ActionVisionAngle: return ActivationFunction.TANH;
-            case ActionNeuron.ActionFieldOfView: return ActivationFunction.SIGMOID;
             case ActionNeuron.ActionReproduce: return ActivationFunction.SIGMOID;
             case ActionNeuron.ActionDigest: return ActivationFunction.SIGMOID;
             case ActionNeuron.ActionPheromone: return ActivationFunction.SIGMOID;
@@ -146,7 +155,7 @@ public class NeuralNetHandler {
 }
 
 public enum InputNeuron {
-    StomachFullness, Energy, Health, Age, IsColliding, AngleToNearestSource, //self information
+    StomachFullness, Energy, Health, Age, IsColliding, IsPregnant, //self information
     AnglePlants, AngleMeats, AngleEntities, DistancePlants, DistanceMeats, DistanceEntities, SameSpeciesInView, //target information
     PheromoneR, PheromoneG, PheromoneB, PheromoneAngle, //pheromone
     Bias, Random, Oscillator //misc
@@ -160,7 +169,6 @@ public enum ActionNeuron {
     ActionRotate,
     ActionReproduce,
     ActionVisionAngle,
-    ActionFieldOfView,
     ActionDigest,
     ActionPheromone //pheromone
 }

@@ -1,14 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using EasyNNFramework.NEAT;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class SpeciesMenu : MonoBehaviour {

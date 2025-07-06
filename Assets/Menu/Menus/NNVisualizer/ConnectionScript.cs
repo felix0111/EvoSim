@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using EasyNNFramework.NEAT;
+using NeuraSuite.NeatExpanded;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

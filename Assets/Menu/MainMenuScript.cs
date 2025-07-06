@@ -17,6 +17,7 @@ public class MainMenuScript : MonoBehaviour {
 
         //settings
         PlayerPrefs.SetInt("EntityCount", (int)transform.Find("Main").Find("EntityCount").GetComponentInChildren<Slider>().value);
+        PlayerPrefs.SetInt("FoodCount", (int)transform.Find("Main").Find("FoodCount").GetComponentInChildren<Slider>().value);
         PlayerPrefs.SetInt("MutationCount", (int)transform.Find("Main").Find("MutationCount").GetComponentInChildren<Slider>().value);
         PlayerPrefs.SetString("DefaultEntity", transform.Find("Main").Find("DefaultEntity").GetComponentInChildren<TMP_Dropdown>().captionText.text);
 

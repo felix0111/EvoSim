@@ -14,10 +14,7 @@ public class EnergyHandler {
     //Digestion
     public float ActiveEnergy {
         get => _activeEnergy;
-        private set {
-            _activeEnergy = Mathf.Clamp(value, 0f, _entity.ScaledMaxEnergy);
-            if (_activeEnergy <= 0f) _entity.Kill(true);
-        }
+        private set => _activeEnergy = Mathf.Clamp(value, 0f, _entity.ScaledMaxEnergy);
     }
 
     //stomach
@@ -29,15 +26,13 @@ public class EnergyHandler {
         get => _reproductionEnergy;
         set {
             _reproductionEnergy = value;
-            if (!(_reproductionEnergy >= _entity.ScaledEnergyToReproduce)) return;
+            if (_reproductionEnergy < _entity.ScaledEnergyToReproduce) return;
 
             _entity.Reproduce();
             _reproductionEnergy = 0f;
-            IsReproducing = false;
+            _entity.IsPregnant = false;
         }
     }
-
-    public bool IsReproducing;
 
     private float _activeEnergy, _meatInStomach, _plantInStomach, _reproductionEnergy;
     private float _smoothingValue = 0f;
@@ -83,9 +78,8 @@ public class EnergyHandler {
         //movement to energy loss
         temp += _entity.AimedMovementDir.magnitude * SimulationScript.Instance.CoSh.MoveEnergyConsumption;
 
-        //take energy for reproduction
-        if (_entity.Network.OutputValues[(int)ActionNeuron.ActionReproduce] > SimulationScript.Instance.CoSh.ActionThreshold || IsReproducing) {
-            IsReproducing = true;
+        //take and accumulate energy for reproduction
+        if (_entity.IsPregnant) {
             float reproductionFactor = _entity.ScaledEnergyToReproduce / SimulationScript.Instance.CoSh.TimeToReproduce;
             temp += reproductionFactor;
             ReproductionEnergy += reproductionFactor * Time.deltaTime;
@@ -124,6 +118,6 @@ public class EnergyHandler {
         actualMeatDigestion = _entity.Gene.Diet == EntityDiet.Carnivore ? actualMeatDigestion * SimulationScript.Instance.CoSh.MeatToEnergyFactor : 0f;
         actualPlantDigestion = _entity.Gene.Diet == EntityDiet.Herbivore ? actualPlantDigestion * SimulationScript.Instance.CoSh.PlantToEnergyFactor : 0f;
 
-        ActiveEnergy = Mathf.Clamp(ActiveEnergy + actualMeatDigestion + actualPlantDigestion, 0f, _entity.ScaledMaxEnergy);
+        ActiveEnergy = ActiveEnergy + actualMeatDigestion + actualPlantDigestion;
     }
 }

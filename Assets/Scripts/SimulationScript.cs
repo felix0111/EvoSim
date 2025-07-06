@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using EasyNNFramework.NEAT;
-using SimpleFileBrowser;
+using NeuraSuite.NeatExpanded;
 using UnityEngine;
-using UnityEngine.UI.Extensions;
 using Random = UnityEngine.Random;
 
 public class SimulationScript : MonoBehaviour {
@@ -18,10 +16,7 @@ public class SimulationScript : MonoBehaviour {
 
     public Tuple<float, SerializableEntity> BestEntity {
         get => _bestEntity;
-        set {
-            if (value.Item1 > _bestEntity.Item1) CoSh.AdaptionPhase = true;
-            _bestEntity = value;
-        }
+        set => _bestEntity = value;
     }
     private Tuple<float, SerializableEntity> _bestEntity = new (0f, default);
 
@@ -36,6 +31,9 @@ public class SimulationScript : MonoBehaviour {
     public FoodPool FoodPool;
     public EntityPool EntityPool;
     public PheromonePool PheromonePool;
+
+    //reproduction
+    public Dictionary<int, int> OffspringBudget;
 
     //neural net
     public Neat Neat;
@@ -55,9 +53,11 @@ public class SimulationScript : MonoBehaviour {
         Neat = new Neat(ins, outs, CoSh.SpeciationOptions);
 
         //init object pooling
-        FoodPool = new FoodPool(FoodPrefab, transform, 8000);
-        EntityPool = new EntityPool(EntityPrefab, transform, 300);
+        FoodPool = new FoodPool(FoodPrefab, transform, 2500);
+        EntityPool = new EntityPool(EntityPrefab, transform, 400);
         PheromonePool = new PheromonePool(PheromonePrefab, transform, 1500);
+
+        OffspringBudget = new Dictionary<int, int>();
     }
 
     void Start() {
@@ -70,25 +70,52 @@ public class SimulationScript : MonoBehaviour {
             es.Mutate(PlayerPrefs.GetInt("MutationCount"));
         }
 
+        //spawn food
+        for (int i = 0; i < PlayerPrefs.GetInt("FoodCount"); i++) {
+            FoodPool.SpawnFood(Utility.RandomPosInRadius(transform.position, 400), Utility.RandomNutritionalValue, false);
+        }
+
         StartCoroutine(CheckImprovement());
+        StartCoroutine(UpdateOffspringBudget());
+
     }
 
     void FixedUpdate() {
-        //hold steady population of min. 20 entities
-        if (EntityPool.ActiveEntities.Count < 20) {
+
+        //hold steady population of min. CoSh.MinPopulation entities
+        if (EntityPool.ActiveEntities.Count < CoSh.MinPopulation) {
             EntityScript es = EntityPool.SpawnEntity(Utility.RandomPosInRadius(transform.position, 400), BestEntity.Item2.Network != null ? BestEntity.Item2 : _defaultEntity);
-            if(Random.value <= CoSh.ChildMutationChance) es.Mutate(Random.Range(1, CoSh.MaxChildMutations + 1));
+            es.Mutate(PlayerPrefs.GetInt("MutationCount"));
+        }
+
+        //Parallel.For(0, EntityPool.ActiveEntities.Count, (i) => EntityPool.ActiveEntities[i].Network.CalculateNetwork());
+    }
+
+    /// <summary>
+    /// Updates the budget each species has. When the population of a species is over the budget, it cannot reproduce.
+    /// </summary>
+    private IEnumerator UpdateOffspringBudget() {
+        while (true) {
+            yield return new WaitForSeconds(5f);
+            OffspringBudget = Neat.GetOffspringAmount(120).ToDictionary(o => o.Item1, o => o.Item2);
         }
     }
 
-    IEnumerator CheckImprovement() {
+    /// <summary>
+    /// Checks periodically if the fitness of the entities are improving or stagnating. Changes mutation to be more aggressive when stagnated.
+    /// </summary>
+    private IEnumerator CheckImprovement() {
+        float currentFitness = 0f;
         while (true) {
-
-            float currentFitness = BestEntity.Item1;
 
             yield return new WaitForSeconds(CoSh.CheckImprovementRate);
 
             CoSh.AdaptionPhase = BestEntity.Item1 > currentFitness;
+
+            currentFitness = BestEntity.Item1;
+
+            //reset
+            BestEntity = new(0f, default);
         }
     }
 
@@ -120,18 +147,17 @@ public static class Utility {
         return lr;
     }
 
-    public static FoodSpawnAreaScript GetNearestArea(Vector2 position) {
+    public static FoodSpawnAreaScript GetNearestFoodArea(Vector2 position) {
 
         float sqr = 0f;
         float minDist = float.MaxValue;
         FoodSpawnAreaScript minDistArea = null;
-        FoodSpawnAreaScript[] areas = SimulationScript.Instance.SpawnAreas;
 
-        for (int i = 0; i < areas.Length; i++) {
-            sqr = (position - (Vector2)areas[i].transform.position).sqrMagnitude;
+        for (int i = 0; i < SimulationScript.Instance.SpawnAreas.Length; i++) {
+            sqr = (position - (Vector2)SimulationScript.Instance.SpawnAreas[i].transform.position).sqrMagnitude;
             if (sqr < minDist) {
                 minDist = sqr;
-                minDistArea = areas[i];
+                minDistArea = SimulationScript.Instance.SpawnAreas[i];
             }
         }
 

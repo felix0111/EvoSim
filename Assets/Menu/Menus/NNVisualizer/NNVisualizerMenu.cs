@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using EasyNNFramework.NEAT;
+using NeuraSuite.NeatExpanded;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -70,18 +69,18 @@ public class NNVisualizerMenu : MonoBehaviour {
 
 
         LayerStructure ls = new (_entityScript.Network);
-        int layerCount = ls.layerArray.Count;
+        int layerCount = ls.LayerArray.Count;
 
         if (_entityScript.Network.RecurrentConnections.Count > 0) layerCount++;
 
         float distBetweenLayer = _rectTransform.rect.width / (layerCount + 1);
 
         //add visual neurons
-        for (int i = 0; i < ls.layerArray.Count; i++) {
-            float distBetweenNeurons = _rectTransform.rect.height / (ls.layerArray[i].Length + 1);
+        for (int i = 0; i < ls.LayerArray.Count; i++) {
+            float distBetweenNeurons = _rectTransform.rect.height / (ls.LayerArray[i].Count + 1);
 
-            for (int j = 0; j < ls.layerArray[i].Length; j++) {
-                CreateNeuronVisual(new Vector3(distBetweenLayer * (i + 1), distBetweenNeurons * (j + 1), 0f), ls.layerArray[i][j], false);
+            for (int j = 0; j < ls.LayerArray[i].Count; j++) {
+                CreateNeuronVisual(new Vector3(distBetweenLayer * (i + 1), distBetweenNeurons * (j + 1), 0f), ls.LayerArray[i][j], false);
             }
         }
 
@@ -189,7 +188,6 @@ public class NNVisualizerMenu : MonoBehaviour {
                 }
 
                 //update neural network
-                _entityScript.Network.RecalculateStructure();
                 SimulationScript.Instance.Neat.SpeciateSingle(_entityScript.Network);
 
                 InterruptDragging();
@@ -201,7 +199,6 @@ public class NNVisualizerMenu : MonoBehaviour {
             _entityScript.Network.Neurons[neuronID].Function = (ActivationFunction)FunctionDropdown.value;
 
             //update neural network
-            _entityScript.Network.RecalculateStructure();
             SimulationScript.Instance.Neat.SpeciateSingle(_entityScript.Network);
 
             //update menu
@@ -219,7 +216,6 @@ public class NNVisualizerMenu : MonoBehaviour {
         }
 
         //update neural network
-        _entityScript.Network.RecalculateStructure();
         SimulationScript.Instance.Neat.SpeciateSingle(_entityScript.Network);
 
         //update menu
