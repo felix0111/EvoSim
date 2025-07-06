@@ -220,8 +220,8 @@ public class EntityScript : Interactable {
 
     public void Reproduce() {
         if (SimulationScript.Instance.OffspringBudget.TryGetValue(Network.SpeciesID, out var budget)) {
-            //if no budget, only 20% chance for reproduction to succeed
-            if (budget <= Species.AllNetworks.Count && Random.value <= 0.8f) return;
+            //if no budget, dont reproduce
+            if (budget <= Species.AllNetworks.Count) return;
         } else {
             Debug.Log($"Could not find offspring budget for species: {Network.SpeciesID}");
             return;
