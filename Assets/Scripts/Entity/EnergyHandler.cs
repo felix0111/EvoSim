@@ -14,7 +14,7 @@ public class EnergyHandler {
     //Digestion
     public float ActiveEnergy {
         get => _activeEnergy;
-        private set => _activeEnergy = Mathf.Clamp(value, 0f, _entity.ScaledMaxEnergy);
+        set => _activeEnergy = Mathf.Clamp(value, 0f, _entity.ScaledMaxEnergy);
     }
 
     //stomach
@@ -22,19 +22,19 @@ public class EnergyHandler {
     public float MeatContent => _meatInStomach;
     public float PlantContent => _plantInStomach;
 
-    public float ReproductionEnergy {
-        get => _reproductionEnergy;
+    public float PregnancyEnergy {
+        get => _pregnancyEnergy;
         set {
-            _reproductionEnergy = value;
-            if (_reproductionEnergy < _entity.ScaledEnergyToReproduce) return;
+            _pregnancyEnergy = value;
+            if (_pregnancyEnergy < _entity.Gene.PregnancyEnergyInvest) return;
 
-            _entity.Reproduce();
-            _reproductionEnergy = 0f;
+            _entity.CreateChild(_entity.Gene.PregnancyEnergyInvest);
+            _pregnancyEnergy = 0f;
             _entity.IsPregnant = false;
         }
     }
 
-    private float _activeEnergy, _meatInStomach, _plantInStomach, _reproductionEnergy;
+    private float _activeEnergy, _meatInStomach, _plantInStomach, _pregnancyEnergy;
     private float _smoothingValue = 0f;
 
     public EnergyHandler(EntityScript entity) {
@@ -44,7 +44,7 @@ public class EnergyHandler {
 
         _meatInStomach = 0f;
         _plantInStomach = 0f;
-        _reproductionEnergy = 0f;
+        _pregnancyEnergy = 0f;
     }
 
     //returns amount that actually got stored
@@ -64,10 +64,6 @@ public class EnergyHandler {
         return amount;
     }
 
-    public void RemoveActiveEnergy(float energy) {
-        ActiveEnergy -= energy;
-    }
-
     private void RecalculateEnergyConsumption() {
         float temp = _entity.ScaledBaseEnergyLoss;
 
@@ -78,11 +74,11 @@ public class EnergyHandler {
         //movement to energy loss
         temp += _entity.AimedMovementDir.magnitude * SimulationScript.Instance.CoSh.MoveEnergyConsumption;
 
-        //take and accumulate energy for reproduction
+        //take energy for child
         if (_entity.IsPregnant) {
-            float reproductionFactor = _entity.ScaledEnergyToReproduce / SimulationScript.Instance.CoSh.TimeToReproduce;
+            float reproductionFactor = _entity.Gene.PregnancyEnergyInvest / _entity.Gene.PregnancyTime;
             temp += reproductionFactor;
-            ReproductionEnergy += reproductionFactor * Time.deltaTime;
+            PregnancyEnergy += reproductionFactor * Time.deltaTime;
         }
 
         //take energy for healing

@@ -65,9 +65,9 @@ public class SettingsMenu : MonoBehaviour {
         AddSliderToSection("Reproduction", "Max. Child Mutations", SimulationScript.Instance.CoSh.MaxChildMutations, true, 0, 20, o => SimulationScript.Instance.CoSh.MaxChildMutations = (int)o);
         AddSliderToSection("Reproduction", "Child Mutation Chance", SimulationScript.Instance.CoSh.ChildMutationChance, false, 0f, 1f, o => SimulationScript.Instance.CoSh.ChildMutationChance = o);
         AddSliderToSection("Reproduction", "Minimum Reproduction Age", SimulationScript.Instance.CoSh.MinAgeToReproduce, true, 1, 99, o => SimulationScript.Instance.CoSh.MinAgeToReproduce = (int)o);
-        AddDoubleSliderToSection("Reproduction", "Energy To Reproduce", SimulationScript.Instance.CoSh.MinEnergyToReproduce, SimulationScript.Instance.CoSh.MaxEnergyToReproduce, false, 10f, 1000f, (min, max) => { SimulationScript.Instance.CoSh.MinEnergyToReproduce = min; SimulationScript.Instance.CoSh.MaxEnergyToReproduce = max; });
-        AddSliderToSection("Reproduction", "Time To Reproduce", SimulationScript.Instance.CoSh.TimeToReproduce, false, 60f, 60f * 10f, o => SimulationScript.Instance.CoSh.TimeToReproduce = o);
-
+        AddDoubleSliderToSection("Reproduction", "Pregnancy Time", SimulationScript.Instance.CoSh.MinPregnancyTime, SimulationScript.Instance.CoSh.MaxPregnancyTime, false, 0f, 60f * 4f, (min, max) => { SimulationScript.Instance.CoSh.MinPregnancyTime = min; SimulationScript.Instance.CoSh.MaxPregnancyTime = max;});
+        AddDoubleSliderToSection("Reproduction", "Pregnancy Energy Invest", SimulationScript.Instance.CoSh.MinPregnancyEnergyInvest, SimulationScript.Instance.CoSh.MaxPregnancyEnergyInvest, false, 0f, 1000f, (min, max) => { SimulationScript.Instance.CoSh.MinPregnancyEnergyInvest = min; SimulationScript.Instance.CoSh.MaxPregnancyEnergyInvest = max; });
+        
         AddSliderToSection("Fighting", "Attack Distance", SimulationScript.Instance.CoSh.MaxAttackDistance, false, 0.2f, 5f, o => SimulationScript.Instance.CoSh.MaxAttackDistance = o);
         AddSliderToSection("Fighting", "Attack Cooldown", SimulationScript.Instance.CoSh.AttackCooldown, false, 0.1f, 5f, o => SimulationScript.Instance.CoSh.AttackCooldown = o);
         AddDoubleSliderToSection("Fighting", "Attack Damage", SimulationScript.Instance.CoSh.MinAttackDamage, SimulationScript.Instance.CoSh.MaxAttackDamage, false, 1f, 100f, (min, max) => { SimulationScript.Instance.CoSh.MinAttackDamage = min; SimulationScript.Instance.CoSh.MaxAttackDamage = max; });

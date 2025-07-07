@@ -56,9 +56,10 @@ public class ConstantSheet
     public float MaxColorDifference = 0.15f;
     public float MaxPheromoneDifference = 0.2f;
     public int MinAgeToReproduce = 15;
-    public float MinEnergyToReproduce = 80f;
-    public float MaxEnergyToReproduce = 180f;
-    public float TimeToReproduce = 60f;
+    public float MinPregnancyEnergyInvest = 50f;
+    public float MaxPregnancyEnergyInvest = 800f;
+    public float MinPregnancyTime = 5f;
+    public float MaxPregnancyTime = 60f * 2f;
     
     //fighting stuff
     public float MaxAttackDistance = 1f;
@@ -94,6 +95,8 @@ public class ConstantSheet
     public float ViewDistanceMutationFactor = 5f;
     public float FieldOfViewMutationFactor = 5f;
     public float OscillatorMutationFactor = 5f;
+    public float PregnancyTimeMutationFactor = 5f;
+    public float PregnancyEnergyInvestMutationFactor = 15f;
     
     //pheromone
     public float PheromoneDegradeTime = 12f;

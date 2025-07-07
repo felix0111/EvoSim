@@ -78,17 +78,22 @@ public class EntityMenu : MonoBehaviour {
 
     private void UpdateInfoText() {
         InfoText.text = _entity.gameObject.name + ": <br>";
+        InfoText.text += "----General----<br>";
         InfoText.text += "Age: " + _entity.Age + "<br>";
         InfoText.text += "Generation: " + _entity.Gene.Generation + "<br>";
         InfoText.text += "Diet: " + (_entity.Gene.Diet == EntityDiet.Herbivore ? "Herbivore" : "Carnivore") + "<br>";
         InfoText.text += "Is Pregnant: " + _entity.IsPregnant + "<br>";
-        InfoText.text += "Pregnancy Progress: " + _entity.EnergyHandler.ReproductionEnergy / _entity.ScaledEnergyToReproduce + "<br>";
+        InfoText.text += "Pregnancy Progress: " + _entity.EnergyHandler.PregnancyEnergy / _entity.Gene.PregnancyEnergyInvest + "<br>";
         InfoText.text += "Energy Consumption: " + _entity.EnergyHandler.EnergyConsumption.ToString("F1") + "<br>";
+        InfoText.text += "----Genes----<br>";
+        InfoText.text += "Pregnancy Time: " + _entity.Gene.PregnancyTime.ToString("F1") + "<br>";
+        InfoText.text += "Pregnancy Energy Invest: " + _entity.Gene.PregnancyEnergyInvest.ToString("F1") + "<br>";
         InfoText.text += "Oscillator Frequency: " + _entity.Gene.OscillatorFrequency.ToString("F1") + "<br>";
         InfoText.text += "Entity Size: " + _entity.Gene.EntitySize.ToString("F1") + "<br>";
         InfoText.text += "View Distance: " + _entity.Gene.ViewDistance.ToString("F1") + "<br>";
-        InfoText.text += "Vision Angle: " + _entity.VisionAngle.ToString("F1") + "<br>";
         InfoText.text += "Field of View: " + _entity.Gene.FieldOfView.ToString("F1") + "<br>";
+        InfoText.text += "----Other----<br>";
+        InfoText.text += "Current Vision Angle: " + _entity.VisionAngle.ToString("F1") + "<br>";
         InfoText.text += "Amount in View: " + _entity.VisionHandler.InVisionCone.Count + "<br>";
         InfoText.text += "Velocity: " + _entity.Rigidbody.linearVelocity.ToString("F1") + "<br>";
         InfoText.text += "Species: " + _entity.Network.SpeciesID + "<br>";
@@ -132,7 +137,7 @@ public class EntityMenu : MonoBehaviour {
 
     public void OnReproduceButton() {
         _entity.SexualPartner = new SerializableEntity(_entity);
-        _entity.Reproduce();
+        _entity.CreateChild(_entity.Gene.PregnancyEnergyInvest);
     }
 
     public void OnKillButton() {

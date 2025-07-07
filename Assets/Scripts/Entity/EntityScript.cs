@@ -76,7 +76,6 @@ public class EntityScript : Interactable {
     public float ScaledBaseEnergyLoss => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinBaseEnergyConsumption, SimulationScript.Instance.CoSh.MaxBaseEnergyConsumption, false);
     public float ScaledStomachContent => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinStomachSize, SimulationScript.Instance.CoSh.MaxStomachSize, false);
     public float ScaledDigestionSpeed => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinDigestionRate, SimulationScript.Instance.CoSh.MaxDigestionRate, false);
-    public float ScaledEnergyToReproduce => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinEnergyToReproduce, SimulationScript.Instance.CoSh.MaxEnergyToReproduce, false);
 
     public override void Awake() {
         base.Awake();
@@ -221,7 +220,7 @@ public class EntityScript : Interactable {
         Rigidbody.AddTorque(AimedRotationDir * SimulationScript.Instance.CoSh.MaxRotationSpeed);
     }
 
-    public void Reproduce() {
+    public void CreateChild(float initialEnergy) {
         if (SimulationScript.Instance.OffspringBudget.TryGetValue(Network.SpeciesID, out var budget)) {
             //if no budget, dont reproduce
             if (budget <= Species.AllNetworks.Count) return;
@@ -241,6 +240,9 @@ public class EntityScript : Interactable {
         //spawn entity
         EntityScript es = SimulationScript.Instance.EntityPool.SpawnEntity(spawnPos, child);
         if (es == null) return; //if entity spawn pool is full, return
+
+        //add initial energy
+        es.EnergyHandler.ActiveEnergy = initialEnergy;
 
         //change network to the crossover network
         SimulationScript.Instance.Neat.ChangeNetwork(es.Network.NetworkID, SimulationScript.Instance.Neat.CrossoverNetworks(es.Network.NetworkID, SexualPartner.Network, Network));
@@ -410,6 +412,18 @@ public class Gene {
     }
     private float _oscillatorFrequency;
 
+    public float PregnancyTime {
+        get => _pregnancyTime;
+        set => _pregnancyTime = Mathf.Clamp(value, SimulationScript.Instance.CoSh.MinPregnancyTime, SimulationScript.Instance.CoSh.MaxPregnancyTime);
+    }
+    private float _pregnancyTime;
+
+    public float PregnancyEnergyInvest {
+        get => _pregnancyEnergyInvest;
+        set => _pregnancyEnergyInvest = Mathf.Clamp(value, SimulationScript.Instance.CoSh.MinPregnancyEnergyInvest, SimulationScript.Instance.CoSh.MaxPregnancyEnergyInvest);
+    }
+    private float _pregnancyEnergyInvest;
+
     public float ViewDistance {
         get => _viewDistance;
         set => _viewDistance = Mathf.Clamp(value, SimulationScript.Instance.CoSh.MinViewDistance, SimulationScript.Instance.CoSh.MaxViewDistance);
@@ -451,6 +465,8 @@ public class Gene {
         PheromoneColor = Color.white;
         Diet = default;
         OscillatorFrequency = SimulationScript.Instance.CoSh.MinOscillatorFrequency;
+        PregnancyTime = (SimulationScript.Instance.CoSh.MinPregnancyTime + SimulationScript.Instance.CoSh.MaxPregnancyTime) / 2f;
+        PregnancyEnergyInvest = SimulationScript.Instance.CoSh.MinPregnancyEnergyInvest;
     }
 
     //copy gene
@@ -463,6 +479,8 @@ public class Gene {
         PheromoneColor = toCopy.PheromoneColor;
         Diet = toCopy.Diet;
         OscillatorFrequency = toCopy.OscillatorFrequency;
+        PregnancyTime = toCopy.PregnancyTime;
+        PregnancyEnergyInvest = toCopy.PregnancyEnergyInvest;
     }
 
     //TODO change color depending on species
@@ -471,6 +489,8 @@ public class Gene {
         if (Random.value < 0.2f) ViewDistance += Random.Range(-1f, 1f) * SimulationScript.Instance.CoSh.ViewDistanceMutationFactor;
         if (Random.value < 0.2f) FieldOfView += Random.Range(-1f, 1f) * SimulationScript.Instance.CoSh.FieldOfViewMutationFactor;
         if (Random.value < 0.2f) OscillatorFrequency += Random.Range(-1f, 1f) * SimulationScript.Instance.CoSh.OscillatorMutationFactor;
+        if (Random.value < 0.2f) PregnancyTime += Random.Range(-1f, 1f) * SimulationScript.Instance.CoSh.PregnancyTimeMutationFactor;
+        if (Random.value < 0.2f) PregnancyEnergyInvest += Random.Range(-1f, 1f) * SimulationScript.Instance.CoSh.PregnancyEnergyInvestMutationFactor;
         if (Random.value < 0.08f) Diet = Diet == EntityDiet.Carnivore ? EntityDiet.Herbivore : EntityDiet.Carnivore;
 
         //mutate pheromone
