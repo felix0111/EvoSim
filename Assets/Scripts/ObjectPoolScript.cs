@@ -93,7 +93,6 @@ public class EntityPool {
         es.StopAllCoroutines();
         ActiveEntities.Remove(es);
         SimulationScript.Instance.Neat.Species[es.Network.SpeciesID].RemoveFromSpecies(es.Network);
-        SimulationScript.Instance.Neat.RemoveEmptySpecies();
 
         es.gameObject.SetActive(false);
     }
