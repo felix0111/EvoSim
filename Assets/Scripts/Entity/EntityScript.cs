@@ -61,8 +61,8 @@ public class EntityScript : Interactable {
     public float Radius => SimulationScript.Instance.CoSh.UnscaledEntityRadius * Gene.EntitySize;
 
     //raw values
-    private float _nutrientsEaten;
-    private float _attackedOther;
+    private float _activeEnergySum;
+    private float _damageDealt;
     private float _damageTaken;
     private int _reproduced;
 
@@ -117,8 +117,8 @@ public class EntityScript : Interactable {
         _pheromoneCooldown = 0f;
         _checkInAreaCooldown = 0f;
 
-        _nutrientsEaten = 0f;
-        _attackedOther = 0;
+        _activeEnergySum = 0f;
+        _damageDealt = 0;
         _damageTaken = 0;
         _reproduced = 0;
 
@@ -158,8 +158,8 @@ public class EntityScript : Interactable {
         _pheromoneCooldown = 0f;
         _checkInAreaCooldown = 0f;
 
-        _nutrientsEaten = 0f;
-        _attackedOther = 0;
+        _activeEnergySum = 0f;
+        _damageDealt = 0;
         _damageTaken = 0;
         _reproduced = 0;
 
@@ -207,6 +207,9 @@ public class EntityScript : Interactable {
 
         //update energy
         EnergyHandler.ConsumeEnergy();
+
+        //used for fitness calculation
+        _activeEnergySum += EnergyHandler.ActiveEnergy / ScaledMaxEnergy * Time.deltaTime;
 
         //check if starving
         if (EnergyHandler.ActiveEnergy == 0f) Health -= 10f * Time.deltaTime;
@@ -326,8 +329,6 @@ public class EntityScript : Interactable {
             actualIntake = EnergyHandler.ToStomach(actualIntake, fs.IsMeat);
             fs.NutritionalValue -= actualIntake;
 
-            _nutrientsEaten += actualIntake;
-
             _eatCooldown = 0f;
         }
     }
@@ -341,7 +342,7 @@ public class EntityScript : Interactable {
             float dealedDamage = es.Damage(ScaledAttackDamage * factor);
             EnergyHandler.ToStomach(dealedDamage, true);
 
-            _attackedOther += dealedDamage;
+            _damageDealt += dealedDamage;
 
             _attackCooldown = 0f;
         }
@@ -375,17 +376,13 @@ public class EntityScript : Interactable {
     }
 
     public float CalculateFitness() {
-        //if (_reproduced == 0) return 0f;
-
         float f = 0f;
 
-        f += _nutrientsEaten / 250f;
-        f += _attackedOther / 100f;
-        f -= _damageTaken / 100f;
-        f += (float)_reproduced / 2f;
-        f += (float)Age / (SimulationScript.Instance.CoSh.MaxAge/2f);
+        f += (_damageDealt - _damageTaken) / 100f;
+        f += _reproduced / 5f;
+        f += _activeEnergySum / PassedTime * 2f; //average active energy
 
-        return f;
+        return Mathf.Max(0f, f);
     }
 
     private float _checkInAreaCooldown;
