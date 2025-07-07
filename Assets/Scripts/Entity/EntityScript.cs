@@ -146,7 +146,7 @@ public class EntityScript : Interactable {
         VisionAngle = 0f;
         AimedRotationDir = 0f;
         AimedMovementDir = Vector2.zero;
-        Health = SimulationScript.Instance.CoSh.MinHealth;
+        Health = ScaledMaxHealth;
         IsMutated = false;
         IsPregnant = false;
         SexualPartner.Network = null;

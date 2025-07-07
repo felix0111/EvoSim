@@ -379,7 +379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
       propertyPath: MaxFoodAmount
-      value: 75
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
       propertyPath: MaxSpawnCount
@@ -518,7 +518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
       propertyPath: MaxFoodAmount
-      value: 75
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4969637592043070718, guid: b7a91c31ba7a3f04298df76f9e3293d1, type: 3}
       propertyPath: MaxSpawnCount

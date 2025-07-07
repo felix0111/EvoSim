@@ -30,7 +30,7 @@ public class ConstantSheet
     public float AttackEnergyConsumption = 0.15f;
     public float PheromoneEnergyConsumption = 0.1f;
     public float MinBaseEnergyConsumption = 0.2f;
-    public float MaxBaseEnergyConsumption = 0.5f;
+    public float MaxBaseEnergyConsumption = 1f;
     public float EnergyConsumptionMultiplier = 1f;
 
     //energy
@@ -82,9 +82,9 @@ public class ConstantSheet
     public float CheckImprovementRate = 60f * 30f;
     public bool AdaptionPhase = true;
     public MutateOptions MutateOptions => AdaptionPhase ? AdaptionMutateOptions : ExpandingMutateOptions;
-    public MutateOptions AdaptionMutateOptions = new MutateOptions(0.10f, 0.10f, 0.70f, 0.01f, 0.02f, 0.02f, 0.04f, 0.01f, default, HiddenFunctions, true);
-    public MutateOptions ExpandingMutateOptions = new MutateOptions(0.24f, 0.24f, 0.10f, 0.06f, 0.12f, 0.12f, 0.08f, 0.04f, default, HiddenFunctions, true);
-    public static ActivationFunction[] HiddenFunctions = new[] { ActivationFunction.SIGMOID, ActivationFunction.MULT, ActivationFunction.LATCH, ActivationFunction.IDENTITY, ActivationFunction.GAUSS, ActivationFunction.ABS, ActivationFunction.BINARYSTEP };
+    public MutateOptions AdaptionMutateOptions = new MutateOptions(0.10f, 0.10f, 0.70f, 0.01f, 0.02f, 0.02f, 0.04f, 1f, default, HiddenFunctions, true);
+    public MutateOptions ExpandingMutateOptions = new MutateOptions(0.24f, 0.24f, 0.10f, 0.06f, 0.12f, 0.12f, 0.08f, 2f, default, HiddenFunctions, true);
+    public static ActivationFunction[] HiddenFunctions = new[] { ActivationFunction.SIGMOID, ActivationFunction.TANH, ActivationFunction.MULT, ActivationFunction.LATCH, ActivationFunction.IDENTITY, ActivationFunction.GAUSS, ActivationFunction.ABS, ActivationFunction.BINARYSTEP };
 
     //species
     public float SpeciesLoggingRate = 60f;
