@@ -18,6 +18,8 @@ public class SpeciesMenu : MonoBehaviour {
 
         for (int i = 0; i < SimulationScript.Instance.Neat.Species.Count; i++) {
             var species = SimulationScript.Instance.Neat.Species.ElementAt(i);
+            if(species.Value.AllNetworks.Count == 0) continue;
+
             float speciesPercentage = (float)species.Value.AllNetworks.Count / 250f;
 
             string dataInfo = "Species " + species.Key + "<br>Amount: " + species.Value.AllNetworks.Count;
