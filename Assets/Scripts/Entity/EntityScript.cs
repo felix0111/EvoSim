@@ -211,7 +211,7 @@ public class EntityScript : Interactable {
         _activeEnergySum += EnergyHandler.ActiveEnergy / ScaledMaxEnergy * Time.deltaTime;
 
         //check if starving
-        if (EnergyHandler.ActiveEnergy == 0f) Health -= 10f * Time.deltaTime;
+        if (EnergyHandler.ActiveEnergy == 0f) Kill(false);
     }
 
     private void Move() {
