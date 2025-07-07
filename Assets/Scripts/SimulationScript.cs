@@ -97,7 +97,12 @@ public class SimulationScript : MonoBehaviour {
     private IEnumerator UpdateOffspringBudget() {
         while (true) {
             yield return new WaitForSeconds(5f);
-            OffspringBudget = Neat.GetOffspringAmount(120).ToDictionary(o => o.Item1, o => Mathf.Max(o.Item2, CoSh.MinSpeciesBudget));
+
+            if (!CoSh.UseSpeciesBudget) {
+                OffspringBudget.Clear();
+            } else {
+                OffspringBudget = Neat.GetOffspringAmount(120).ToDictionary(o => o.Item1, o => Mathf.Max(o.Item2, CoSh.MinSpeciesBudget));
+            }
         }
     }
 

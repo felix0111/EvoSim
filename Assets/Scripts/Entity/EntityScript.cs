@@ -221,12 +221,9 @@ public class EntityScript : Interactable {
     }
 
     public void CreateChild(float initialEnergy) {
-        if (SimulationScript.Instance.OffspringBudget.TryGetValue(Network.SpeciesID, out var budget)) {
-            //if no budget, dont reproduce
-            if (budget <= Species.AllNetworks.Count) return;
-        } else {
-            Debug.Log($"Could not find offspring budget for species: {Network.SpeciesID}");
-            return;
+        //dont create child if using species budget and member count is over budget
+        if (SimulationScript.Instance.CoSh.UseSpeciesBudget) {
+            if (!SimulationScript.Instance.OffspringBudget.TryGetValue(Network.SpeciesID, out var budget) || Species.AllNetworks.Count >= budget) return;
         }
 
         Vector2 spawnPos = transform.position - transform.up * 2f;

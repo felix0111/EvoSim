@@ -27,6 +27,7 @@ public class SettingsMenu : MonoBehaviour {
 
         AddSliderToSection("Simulation", "Minimum Population", SimulationScript.Instance.CoSh.MinPopulation, true, 10, 150, o => SimulationScript.Instance.CoSh.MinPopulation = (int)o);
         AddSliderToSection("Simulation", "Check for Improvement Rate", SimulationScript.Instance.CoSh.CheckImprovementRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.CheckImprovementRate = o);
+        AddCheckboxToSection("Simulation", "Use Species Budget", SimulationScript.Instance.CoSh.UseSpeciesBudget, o => SimulationScript.Instance.CoSh.UseSpeciesBudget = o);
         AddSliderToSection("Simulation", "Minimum Species Budget", SimulationScript.Instance.CoSh.MinSpeciesBudget, true, 0, 20, o => SimulationScript.Instance.CoSh.MinSpeciesBudget = (int)o);
         AddSliderToSection("Simulation", "Species Logging Rate", SimulationScript.Instance.CoSh.SpeciesLoggingRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.SpeciesLoggingRate = o);
         AddSliderToSection("Simulation", "Vision Step", SimulationScript.Instance.CoSh.CheckVisionStep, true, 1, 8, o => SimulationScript.Instance.CoSh.CheckVisionStep = (int)o);
