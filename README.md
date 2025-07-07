@@ -7,7 +7,8 @@ This simulator tries to simulate the evolution of agents (called "Entity") and t
 ## Neural Network
 <img src="https://github.com/user-attachments/assets/e6b49b80-3bb8-40bd-96fb-03471a55ddfb" width="800">
 
-Each entity is assigned a neural network, its brain. The neural network and its methods are based on NEAT (NeuroEvolution of Augmenting Topologies). See also my project NeuraSuite. 
+Each entity is assigned a neural network, its brain. The neural network and its methods are based on NEAT (NeuroEvolution of Augmenting Topologies). See also [NeuraSuite](https://github.com/felix0111/NeuraSuite)  
+Evolving a neural network with the NEAT method allows for dynamic and structural mutation, speciation and recurrent connections for LSTM-like behaviour.
 
 ### The input neurons of an entities neural network
 -StomachFullness  
@@ -82,17 +83,17 @@ An entity has a vision cone with a specific length and field of view. The vision
 ### Fighting
 An entity can attack another entity and reduce its health. When an entity has zero health, it dies and drops meat.
 
-### Reproduction
-Entities can get pregnant which takes a certain amount of time and also increases their hunger drain. A pregnancy starts when their neural network activates the "ActionReproduce" output neuron. Reproduction can happen asexual (happens most of the time) and sexual (only when they touch another entity at the moment a pregnancy is started (unlikely to happen). When pregnancy is started, the entity will consume and accumulate extra energy until a certain threshold is reached. The pregnancy is then finished and a new entity will spawn with a copy of the neural network of its parent. The neural network of the child has a certain chance to get mutated when it is first spawned.  
+### Pregnancy
+Entities can get pregnant which takes a certain amount of time and also increases their hunger drain. A pregnancy starts when their neural network activates the "ActionReproduce" output neuron. Reproduction can happen asexual (happens most of the time) and sexual (only when they touch another entity at the moment a pregnancy is started (unlikely to happen). When pregnancy is started, the entity will consume and accumulate extra energy until a certain threshold is reached. The pregnancy is then finished and a new entity will spawn. The neural network of a child is either a copy of its parent (asexual reproduction) or a crossover of both parents (sexual reproduction). The neural network of the child also has a random chance to get mutated when it is first spawned.  
 
 ### Speciation
-At the start of an entity's lifetime it is assigned to a species similar to the traditional NEAT implementation. When an entity differs to much from every species representative, a new species will be created. The neural network of an entity gets information about wheter an entity in view is in the same species or not.  
+At the start of an entity's lifetime it is assigned to a species similar to the traditional NEAT implementation. When an entity differs to much from every species representative, a new species will be created. The neural network of an entity gets information about wheter an entity in view is in the same species or not.
 
 ### Species Member Budget
 A member budget which is used to limit the size of a species is calculated for each species periodically. This is enforced by preventing pregnancy of a member when the member count is higher than the budget. The member budget of each species is proportional to the sum of adjusted fitnesses of its members and thus preventing large species to dominate the simulation.
 
 ### Pheromones
-An entity can emit pheromones. A pheromone has a certain color (RGB) which is used to dicern pheromones from different entities. A pheromone also stores information about the direction the emitter (entity) moved. The color of the pheromone an entity emits stays the same for its whole lifetime but may change in its child randomly by mutation. 
+An entity can emit pheromones. A pheromone has a certain color (RGB) which is used to dicern pheromones from different entities. A pheromone also stores information about the direction the emitter (entity) moved. The color of the pheromone an entity emits stays the same for its whole lifetime but may change in its child randomly by mutation. Pheromones decay over time.
 
 ### Smelling
 The neural network of an entity can get information of the red, green, and blue values of a pheromone and the direction of the emitter in form of an angle. This makes it possible for an entity to detect if an entity from another niche/species was recently at a specific location and in which direction it moved.
