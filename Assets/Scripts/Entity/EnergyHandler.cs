@@ -83,7 +83,7 @@ public class EnergyHandler {
 
         //take energy for healing
         if (_entity.Health < _entity.ScaledMaxHealth && ActiveEnergy >= SimulationScript.Instance.CoSh.MinEnergyToHeal) {
-            temp += SimulationScript.Instance.CoSh.HealingRate;
+            temp += SimulationScript.Instance.CoSh.HealingRate / 2f;
             _entity.Health += SimulationScript.Instance.CoSh.HealingRate * Time.deltaTime;
         }
 
