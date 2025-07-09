@@ -26,7 +26,7 @@ public class ConstantSheet
     public float EatCooldown = 1f;
 
     //energy losses (every 1 second)
-    public float MoveEnergyConsumption = 1.6f;
+    public float MoveEnergyConsumption = 2f;
     public float AttackEnergyConsumption = 0.15f;
     public float PheromoneEnergyConsumption = 0.1f;
     public float MinBaseEnergyConsumption = 0.2f;
@@ -41,7 +41,7 @@ public class ConstantSheet
 
     //digestion
     public float MinDigestionRate = 2f;
-    public float MaxDigestionRate = 5f;
+    public float MaxDigestionRate = 10f;
     public float MeatToEnergyFactor = 1.5f;
     public float PlantToEnergyFactor = 1f;
 
@@ -71,8 +71,8 @@ public class ConstantSheet
     
     //movement
     public float MaxRotationSpeed = 16f;
-    public float MaxMovementSpeed = 100f;
-    public float MinMovementSpeed = 50f;
+    public float MaxMovementSpeed = 200f;
+    public float MinMovementSpeed = 20f;
 
     //neural network
     public static float ActionThreshold = 0.2f;
@@ -86,11 +86,11 @@ public class ConstantSheet
     public static ActivationFunction[] HiddenFunctions = new[] { ActivationFunction.SIGMOID, ActivationFunction.TANH, ActivationFunction.MULT, ActivationFunction.LATCH, ActivationFunction.IDENTITY, ActivationFunction.GAUSS, ActivationFunction.ABS, ActivationFunction.BINARYSTEP };
 
     //neural network mutation chances
-    public static float AddConnectionChance = 0.1f;
+    public static float AddConnectionChance = 0.2f;
     public static float RemoveConnectionChance = 0f;
-    public static float AdjustWeightChance = 0.7f;
-    public static float ToggleConnectionChance = 0.08f;
-    public static float AddNeuronChance = 0.02f;
+    public static float AdjustWeightChance = 0.3f;
+    public static float ToggleConnectionChance = 0.02f;
+    public static float AddNeuronChance = 0.05f;
     public static float RemoveNeuronChance = 0f;
     public static float RandomFunctionChance = 0.04f;
 
