@@ -94,9 +94,6 @@ public class SettingsMenu : MonoBehaviour {
         _menuSections.Add(Instantiate(MenuSectionPrefab, MenuSectionContent));
         _menuSections.Last().GetComponent<MenuSectionScript>().Headline.text = sectionHeadline;
         _menuSections.Last().name = sectionHeadline;
-
-        //update content size
-        MenuSectionContent.sizeDelta = new Vector2((25f + 250f) * MenuSectionContent.childCount + 25f, MenuSectionContent.sizeDelta.y);
     }
 
     public void AddSliderToSection(string section, string sliderDescription, float defaultValue, bool useInt, float minValue, float maxValue, UnityAction<float> call) {
@@ -111,8 +108,6 @@ public class SettingsMenu : MonoBehaviour {
         s.onValueChanged.AddListener(call);
         s.onValueChanged.AddListener(s.GetComponent<SliderUpdateScript>().OnValueChanged);
         s.value = defaultValue;
-
-        sectionScript.UpdateContentSize();
     }
 
     public void AddDoubleSliderToSection(string section, string sliderDescription, float defaultValueMin, float defaultValueMax, bool useInt, float minValue, float maxValue, UnityAction<float, float> call) {
@@ -128,8 +123,6 @@ public class SettingsMenu : MonoBehaviour {
         s.OnValueChanged.AddListener(s.GetComponent<SliderUpdateScript>().OnValueChanged);
         s.LowValue = defaultValueMin;
         s.HighValue = defaultValueMax;
-
-        sectionScript.UpdateContentSize();
     }
 
     public void AddCheckboxToSection(string section, string checkboxDescription, bool defaultValue, UnityAction<bool> call) {
@@ -140,7 +133,6 @@ public class SettingsMenu : MonoBehaviour {
         Toggle t = checkbox.GetComponentInChildren<Toggle>();
         t.onValueChanged.AddListener(call);
         t.isOn = defaultValue;
-
     }
 
 }
