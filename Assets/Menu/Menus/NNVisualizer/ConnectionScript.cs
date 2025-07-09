@@ -18,7 +18,7 @@ public class ConnectionScript : MonoBehaviour, IPointerClickHandler {
         MakeLine(pos1, pos2, null, color);
         
         if(_weightText == null) AddWeightText();
-        _weightText.text = connection.Weight.ToString("F1");
+        _weightText.text = connection.InnovationID + ": " + connection.Weight.ToString("F1");
     }
 
     private void MakeLine(Vector2 start, Vector2 end, Sprite sprite, Color color) {
