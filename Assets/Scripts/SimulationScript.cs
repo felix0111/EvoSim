@@ -50,7 +50,7 @@ public class SimulationScript : MonoBehaviour {
 
         //init neural net
         NeuralNetHandler.GetNeuronTemplates(out Neuron[] ins, out Neuron[] outs);
-        Neat = new Neat(ins, outs, CoSh.SpeciationOptions);
+        Neat = new Neat(ins, outs, ConstantSheet.SpeciationOptions);
 
         //init object pooling
         FoodPool = new FoodPool(FoodPrefab, transform, 2500);
@@ -113,7 +113,7 @@ public class SimulationScript : MonoBehaviour {
         float currentFitness = 0f;
         while (true) {
 
-            yield return new WaitForSeconds(CoSh.CheckImprovementRate);
+            yield return new WaitForSeconds(ConstantSheet.CheckImprovementRate);
 
             CoSh.AdaptionPhase = BestEntity.Item1 > currentFitness;
 

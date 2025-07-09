@@ -69,27 +69,27 @@ public class NeuralNetHandler {
         _entity.AimedRotationDir = outputValuesBuffer[(int)ActionNeuron.ActionRotate];
         
         //pheromone neuron
-        if (outputValuesBuffer[(int)ActionNeuron.ActionPheromone] >= SimulationScript.Instance.CoSh.ActionThreshold) {
+        if (outputValuesBuffer[(int)ActionNeuron.ActionPheromone] >= ConstantSheet.ActionThreshold) {
             _entity.ProducePheromone();
         }
 
         //attack
-        if (outputValuesBuffer[(int)ActionNeuron.ActionAttack] >= SimulationScript.Instance.CoSh.ActionThreshold) {
+        if (outputValuesBuffer[(int)ActionNeuron.ActionAttack] >= ConstantSheet.ActionThreshold) {
             _entity.Attack();
         }
 
         //eating
-        if (outputValuesBuffer[(int)ActionNeuron.ActionEat] >= SimulationScript.Instance.CoSh.ActionThreshold) {
+        if (outputValuesBuffer[(int)ActionNeuron.ActionEat] >= ConstantSheet.ActionThreshold) {
             _entity.Eat();
         }
 
         //digesting
-        if (outputValuesBuffer[(int)ActionNeuron.ActionDigest] >= SimulationScript.Instance.CoSh.ActionThreshold) {
+        if (outputValuesBuffer[(int)ActionNeuron.ActionDigest] >= ConstantSheet.ActionThreshold) {
             _entity.EnergyHandler.Digest();
         }
 
         //want to reproduce
-        if (outputValuesBuffer[(int)ActionNeuron.ActionReproduce] >= SimulationScript.Instance.CoSh.ActionThreshold && !_entity.IsPregnant && _entity.Age >= SimulationScript.Instance.CoSh.MinAgeToReproduce) {
+        if (outputValuesBuffer[(int)ActionNeuron.ActionReproduce] >= ConstantSheet.ActionThreshold && !_entity.IsPregnant && _entity.Age >= SimulationScript.Instance.CoSh.MinAgeToReproduce) {
 
             if (SimulationScript.Instance.CoSh.SexualReproduction) {
                 //use when sexual reproduction

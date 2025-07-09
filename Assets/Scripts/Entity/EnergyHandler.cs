@@ -68,8 +68,8 @@ public class EnergyHandler {
         float temp = _entity.ScaledBaseEnergyLoss;
 
         //take energy if attacking/producing pheromones
-        if (_entity.Network.OutputValues[(int)ActionNeuron.ActionAttack] > SimulationScript.Instance.CoSh.ActionThreshold) temp += SimulationScript.Instance.CoSh.AttackEnergyConsumption;
-        if (_entity.Network.OutputValues[(int)ActionNeuron.ActionPheromone] > SimulationScript.Instance.CoSh.ActionThreshold) temp += SimulationScript.Instance.CoSh.PheromoneEnergyConsumption;
+        if (_entity.Network.OutputValues[(int)ActionNeuron.ActionAttack] > ConstantSheet.ActionThreshold) temp += SimulationScript.Instance.CoSh.AttackEnergyConsumption;
+        if (_entity.Network.OutputValues[(int)ActionNeuron.ActionPheromone] > ConstantSheet.ActionThreshold) temp += SimulationScript.Instance.CoSh.PheromoneEnergyConsumption;
 
         //movement to energy loss
         temp += _entity.AimedMovementDir.magnitude * SimulationScript.Instance.CoSh.MoveEnergyConsumption;

@@ -75,16 +75,31 @@ public class ConstantSheet
     public float MinMovementSpeed = 50f;
 
     //neural network
-    public float ActionThreshold = 0.2f;
-    public SpeciationOptions SpeciationOptions => new SpeciationOptions(1f, 0.05f, 0.5f, true);
-
-    //neural network mutation
-    public float CheckImprovementRate = 60f * 30f;
+    public static float ActionThreshold = 0.2f;
+    public static float WeightAdjustmentMagnitude = 1f;
+    public static float CheckImprovementRate = 60f * 30f;
     public bool AdaptionPhase = true;
+    public static float ExpansionMult = 2f;
     public MutateOptions MutateOptions => AdaptionPhase ? AdaptionMutateOptions : ExpandingMutateOptions;
-    public MutateOptions AdaptionMutateOptions = new MutateOptions(0.10f, 0.0f, 0.70f, 0.08f, 0.02f, 0.0f, 0.04f, 1f, default, HiddenFunctions, true);
-    public MutateOptions ExpandingMutateOptions = new MutateOptions(0.24f, 0.0f, 0.10f, 0.16f, 0.12f, 0.0f, 0.08f, 2f, default, HiddenFunctions, true);
+    public MutateOptions AdaptionMutateOptions => new MutateOptions(AddConnectionChance, RemoveConnectionChance, AdjustWeightChance, ToggleConnectionChance, AddNeuronChance, RemoveNeuronChance, RandomFunctionChance, WeightAdjustmentMagnitude, default, HiddenFunctions, true);
+    public MutateOptions ExpandingMutateOptions => new MutateOptions(AddConnectionChance * ExpansionMult, RemoveConnectionChance * ExpansionMult, AdjustWeightChance * ExpansionMult, ToggleConnectionChance * ExpansionMult, AddNeuronChance * ExpansionMult, RemoveNeuronChance * ExpansionMult, RandomFunctionChance * ExpansionMult, WeightAdjustmentMagnitude * ExpansionMult, default, HiddenFunctions, true);
     public static ActivationFunction[] HiddenFunctions = new[] { ActivationFunction.SIGMOID, ActivationFunction.TANH, ActivationFunction.MULT, ActivationFunction.LATCH, ActivationFunction.IDENTITY, ActivationFunction.GAUSS, ActivationFunction.ABS, ActivationFunction.BINARYSTEP };
+
+    //neural network mutation chances
+    public static float AddConnectionChance = 0.1f;
+    public static float RemoveConnectionChance = 0f;
+    public static float AdjustWeightChance = 0.7f;
+    public static float ToggleConnectionChance = 0.08f;
+    public static float AddNeuronChance = 0.02f;
+    public static float RemoveNeuronChance = 0f;
+    public static float RandomFunctionChance = 0.04f;
+
+    //speciation
+    public static SpeciationOptions SpeciationOptions => new SpeciationOptions(DisjointFactor, WeightFactor, CompatabilityThreshold, UseAdjustedFitness);
+    public static float DisjointFactor = 1f;
+    public static float WeightFactor = 0.05f;
+    public static float CompatabilityThreshold = 0.5f;
+    public static bool UseAdjustedFitness = true;
 
     //species
     public float SpeciesLoggingRate = 60f;
