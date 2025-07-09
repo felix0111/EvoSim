@@ -51,12 +51,12 @@ public class ConstantSheet
 
     //reproduction
     public bool SexualReproduction = false;
-    public int MaxChildMutations = 3;
+    public int MaxChildMutations = 1;
     public float ChildMutationChance = 1f;
     public float MaxColorDifference = 0.15f;
     public float MaxPheromoneDifference = 0.2f;
     public int MinAgeToReproduce = 15;
-    public float MinPregnancyEnergyInvest = 50f;
+    public float MinPregnancyEnergyInvest = 10f;
     public float MaxPregnancyEnergyInvest = 800f;
     public float MinPregnancyTime = 5f;
     public float MaxPregnancyTime = 60f * 2f;
@@ -76,14 +76,14 @@ public class ConstantSheet
 
     //neural network
     public float ActionThreshold = 0.2f;
-    public SpeciationOptions SpeciationOptions => new SpeciationOptions(1f, 0.05f, 0.3f, true);
+    public SpeciationOptions SpeciationOptions => new SpeciationOptions(1f, 0.05f, 0.5f, true);
 
     //neural network mutation
     public float CheckImprovementRate = 60f * 30f;
     public bool AdaptionPhase = true;
     public MutateOptions MutateOptions => AdaptionPhase ? AdaptionMutateOptions : ExpandingMutateOptions;
-    public MutateOptions AdaptionMutateOptions = new MutateOptions(0.10f, 0.10f, 0.70f, 0.01f, 0.02f, 0.02f, 0.04f, 1f, default, HiddenFunctions, true);
-    public MutateOptions ExpandingMutateOptions = new MutateOptions(0.24f, 0.24f, 0.10f, 0.06f, 0.12f, 0.12f, 0.08f, 2f, default, HiddenFunctions, true);
+    public MutateOptions AdaptionMutateOptions = new MutateOptions(0.10f, 0.0f, 0.70f, 0.08f, 0.02f, 0.0f, 0.04f, 1f, default, HiddenFunctions, true);
+    public MutateOptions ExpandingMutateOptions = new MutateOptions(0.24f, 0.0f, 0.10f, 0.16f, 0.12f, 0.0f, 0.08f, 2f, default, HiddenFunctions, true);
     public static ActivationFunction[] HiddenFunctions = new[] { ActivationFunction.SIGMOID, ActivationFunction.TANH, ActivationFunction.MULT, ActivationFunction.LATCH, ActivationFunction.IDENTITY, ActivationFunction.GAUSS, ActivationFunction.ABS, ActivationFunction.BINARYSTEP };
 
     //species

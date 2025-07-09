@@ -463,7 +463,7 @@ public class Gene {
         Diet = default;
         OscillatorFrequency = SimulationScript.Instance.CoSh.MinOscillatorFrequency;
         PregnancyTime = (SimulationScript.Instance.CoSh.MinPregnancyTime + SimulationScript.Instance.CoSh.MaxPregnancyTime) / 2f;
-        PregnancyEnergyInvest = SimulationScript.Instance.CoSh.MinPregnancyEnergyInvest;
+        PregnancyEnergyInvest = 50f;
     }
 
     //copy gene
