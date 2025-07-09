@@ -99,7 +99,7 @@ public class SettingsMenu : MonoBehaviour {
 
         AddSliderToSection("Speciation", "Disjoint Factor", ConstantSheet.DisjointFactor, false, 0f, 5f, o => ConstantSheet.DisjointFactor = o);
         AddSliderToSection("Speciation", "Weight Factor", ConstantSheet.WeightFactor, false, 0f, 5f, o => ConstantSheet.WeightFactor = o);
-        AddSliderToSection("Speciation", "Compatability Threshold", ConstantSheet.DisjointFactor, false, 0f, 5f, o => ConstantSheet.DisjointFactor = o);
+        AddSliderToSection("Speciation", "Compatability Threshold", ConstantSheet.CompatabilityThreshold, false, 0f, 5f, o => ConstantSheet.CompatabilityThreshold = o);
         AddCheckboxToSection("Speciation", "Use Adjusted Fitness", ConstantSheet.UseAdjustedFitness, o => ConstantSheet.UseAdjustedFitness = o);
 
         AddCheckboxToSection("Species", "Use Species Budget", SimulationScript.Instance.CoSh.UseSpeciesBudget, o => SimulationScript.Instance.CoSh.UseSpeciesBudget = o);
