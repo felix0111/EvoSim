@@ -104,7 +104,7 @@ public class SettingsMenu : MonoBehaviour {
 
         AddCheckboxToSection("Species", "Use Species Budget", SimulationScript.Instance.CoSh.UseSpeciesBudget, o => SimulationScript.Instance.CoSh.UseSpeciesBudget = o);
         AddSliderToSection("Species", "Minimum Species Budget", SimulationScript.Instance.CoSh.MinSpeciesBudget, true, 0, 20, o => SimulationScript.Instance.CoSh.MinSpeciesBudget = (int)o);
-        AddSliderToSection("Species", "Species Logging Rate", SimulationScript.Instance.CoSh.SpeciesLoggingRate, false, 60f, 60f * 60f, o => SimulationScript.Instance.CoSh.SpeciesLoggingRate = o);
+        AddSliderToSection("Species", "Targeted Population Size", ConstantSheet.TargetedPopulationSize, true, 20, 200, o => ConstantSheet.TargetedPopulationSize = (int)o);
 
         AddDoubleSliderToSection("Food", "Food Nutrition", SimulationScript.Instance.CoSh.MinFoodNutrition, SimulationScript.Instance.CoSh.MaxFoodNutrition, false, 10f, 250f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodNutrition = min; SimulationScript.Instance.CoSh.MaxFoodNutrition = max; });
         AddDoubleSliderToSection("Food", "Food Size", SimulationScript.Instance.CoSh.MinFoodRadius, SimulationScript.Instance.CoSh.MaxFoodRadius, false, 0.4f, 10f, (min, max) => { SimulationScript.Instance.CoSh.MinFoodRadius = min; SimulationScript.Instance.CoSh.MaxFoodRadius = max; });

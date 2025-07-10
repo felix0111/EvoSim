@@ -105,6 +105,7 @@ public class ConstantSheet
     public float SpeciesLoggingRate = 60f;
     public bool UseSpeciesBudget = false;
     public int MinSpeciesBudget = 5;
+    public static int TargetedPopulationSize = 120;
 
     //gene mutations
     public float SizeMutationFactor = 0.4f;
