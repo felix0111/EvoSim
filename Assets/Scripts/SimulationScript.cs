@@ -119,9 +119,6 @@ public class SimulationScript : MonoBehaviour {
             CoSh.AdaptionPhase = BestEntity.Item1 > currentFitness;
 
             currentFitness = BestEntity.Item1;
-
-            //reset
-            BestEntity = new(0f, default);
         }
     }
 
