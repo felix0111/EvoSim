@@ -156,6 +156,18 @@ public class NNVisualizerMenu : MonoBehaviour {
         foreach (var neuronVisualPosition in _neuronDict) {
             Neuron n = _entityScript.Network.Neurons[neuronVisualPosition.Key];
 
+            //change color of neurons
+            Color c;
+            if (n.Value == 0f) {
+                c = new Color(1f, 1f, 1f);
+            } else if (n.Value > 0f) {
+                c = new Color(1f - Mathf.Min(1f, n.Value), 1f, 1f - Mathf.Min(1f, n.Value));
+            } else {
+                c = new Color(1f, 1f - Mathf.Min(1f, Mathf.Abs(n.Value)), 1f - Mathf.Min(1f, Mathf.Abs(n.Value)));
+            }
+            neuronVisualPosition.Value.GetComponentInChildren<UICornerCut>().color = c;
+
+
             neuronVisualPosition.Value.GetComponentInChildren<TMP_Text>().text = MathF.Round(n.Value, 3) + "<br>" + NeuralNetHandler.GetNeuronName(n.ID);
 
             if (n.Type != NeuronType.Input) neuronVisualPosition.Value.GetComponentInChildren<TMP_Text>().text += "<br>" + Enum.GetName(typeof(ActivationFunction), n.Function);
