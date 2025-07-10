@@ -206,6 +206,7 @@ public class EntityScript : Interactable {
         Move();
 
         //update energy
+        EnergyHandler.Digest();
         EnergyHandler.ConsumeEnergy();
 
         //used for fitness calculation
@@ -387,7 +388,7 @@ public class EntityScript : Interactable {
 
     private float _checkInAreaCooldown;
     private void CheckInFoodArea() {
-        if (_checkInAreaCooldown < 5f || !SimulationScript.Instance.CoSh.RotateToMainArea || CollisionWatcher.TryGet(out FoodSpawnAreaScript _)) return;
+        if (_checkInAreaCooldown < 2f || !SimulationScript.Instance.CoSh.RotateToMainArea || CollisionWatcher.TryGet(out FoodSpawnAreaScript _)) return;
 
         //if not in a food area, rotate to nearest food area
         var fsa = Utility.GetNearestFoodArea(transform.position);

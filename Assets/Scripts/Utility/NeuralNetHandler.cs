@@ -83,10 +83,11 @@ public class NeuralNetHandler {
             _entity.Eat();
         }
 
+        /*
         //digesting
         if (outputValuesBuffer[(int)ActionNeuron.ActionDigest] >= ConstantSheet.ActionThreshold) {
             _entity.EnergyHandler.Digest();
-        }
+        }*/
 
         //want to reproduce
         if (outputValuesBuffer[(int)ActionNeuron.ActionReproduce] >= ConstantSheet.ActionThreshold && !_entity.IsPregnant && _entity.Age >= SimulationScript.Instance.CoSh.MinAgeToReproduce) {
@@ -116,7 +117,7 @@ public class NeuralNetHandler {
             case ActionNeuron.ActionRotate: return ActivationFunction.TANH;
             case ActionNeuron.ActionVisionAngle: return ActivationFunction.TANH;
             case ActionNeuron.ActionReproduce: return ActivationFunction.SIGMOID;
-            case ActionNeuron.ActionDigest: return ActivationFunction.SIGMOID;
+            //case ActionNeuron.ActionDigest: return ActivationFunction.SIGMOID;
             case ActionNeuron.ActionPheromone: return ActivationFunction.SIGMOID;
             default: return ActivationFunction.IDENTITY;
         }
@@ -169,6 +170,6 @@ public enum ActionNeuron {
     ActionRotate,
     ActionReproduce,
     ActionVisionAngle,
-    ActionDigest,
+    //ActionDigest,
     ActionPheromone //pheromone
 }
