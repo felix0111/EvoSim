@@ -101,6 +101,7 @@ public class SimulationScript : MonoBehaviour {
             if (!CoSh.UseSpeciesBudget) {
                 OffspringBudget.Clear();
             } else {
+                Neat.SpeciationOptions = ConstantSheet.SpeciationOptions;
                 OffspringBudget = Neat.GetOffspringAmount(ConstantSheet.TargetedPopulationSize).ToDictionary(o => o.Item1, o => Mathf.Max(o.Item2, CoSh.MinSpeciesBudget));
             }
         }
