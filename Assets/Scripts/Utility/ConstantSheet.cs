@@ -26,7 +26,8 @@ public class ConstantSheet
     public float EatCooldown = 1f;
 
     //energy losses (every 1 second)
-    public float MoveEnergyConsumption = 2f;
+    public float MinMoveEnergyConsumption = 3f;
+    public float MaxMoveEnergyConsumption = 8f;
     public float AttackEnergyConsumption = 0.15f;
     public float PheromoneEnergyConsumption = 0.1f;
     public float MinBaseEnergyConsumption = 0.2f;

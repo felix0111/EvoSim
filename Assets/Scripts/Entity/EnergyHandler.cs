@@ -72,7 +72,7 @@ public class EnergyHandler {
         if (_entity.Network.OutputValues[(int)ActionNeuron.ActionPheromone] > ConstantSheet.ActionThreshold) temp += SimulationScript.Instance.CoSh.PheromoneEnergyConsumption;
 
         //movement to energy loss
-        temp += _entity.AimedMovementDir.magnitude * SimulationScript.Instance.CoSh.MoveEnergyConsumption;
+        temp += _entity.AimedMovementDir.magnitude * _entity.ScaledMovingEnergyLoss;
 
         //take energy for child
         if (_entity.IsPregnant) {

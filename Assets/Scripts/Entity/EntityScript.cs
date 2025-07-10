@@ -74,6 +74,7 @@ public class EntityScript : Interactable {
     public float ScaledAttackDamage => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinAttackDamage, SimulationScript.Instance.CoSh.MaxAttackDamage, false);
     public float ScaledDefenseFactor => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinDefenseFactor, SimulationScript.Instance.CoSh.MaxDefenseFactor, false);
     public float ScaledBaseEnergyLoss => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinBaseEnergyConsumption, SimulationScript.Instance.CoSh.MaxBaseEnergyConsumption, false);
+    public float ScaledMovingEnergyLoss => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinMoveEnergyConsumption, SimulationScript.Instance.CoSh.MaxMoveEnergyConsumption, false);
     public float ScaledStomachContent => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinStomachSize, SimulationScript.Instance.CoSh.MaxStomachSize, false);
     public float ScaledDigestionSpeed => ScaledToSizeValue(SimulationScript.Instance.CoSh.MinDigestionRate, SimulationScript.Instance.CoSh.MaxDigestionRate, false);
 
