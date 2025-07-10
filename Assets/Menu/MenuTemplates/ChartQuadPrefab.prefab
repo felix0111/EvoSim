@@ -82,5 +82,5 @@ MonoBehaviour:
   TooltipBackground: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 0.5529412}
   TooltipSprite: {fileID: 0}
   TooltipText: 
-  TooltipSize: {x: 160, y: 20}
+  TooltipSize: {x: 160, y: 40}
   FontSize: 15
