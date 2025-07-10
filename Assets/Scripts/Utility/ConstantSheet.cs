@@ -53,7 +53,7 @@ public class ConstantSheet
     //reproduction
     public bool SexualReproduction = false;
     public int MaxChildMutations = 1;
-    public float ChildMutationChance = 1f;
+    public float ChildMutationChance = 0.3f;
     public float MaxColorDifference = 0.15f;
     public float MaxPheromoneDifference = 0.2f;
     public int MinAgeToReproduce = 15;
@@ -78,9 +78,9 @@ public class ConstantSheet
     //neural network
     public static float ActionThreshold = 0.2f;
     public static float WeightAdjustmentMagnitude = 1f;
-    public static float CheckImprovementRate = 60f * 30f;
+    public static float CheckImprovementRate = 60f * 60f;
     public bool AdaptionPhase = true;
-    public static float ExpansionMult = 2f;
+    public static float ExpansionMult = 1.2f;
     public MutateOptions MutateOptions => AdaptionPhase ? AdaptionMutateOptions : ExpandingMutateOptions;
     public MutateOptions AdaptionMutateOptions => new MutateOptions(AddConnectionChance, RemoveConnectionChance, AdjustWeightChance, ToggleConnectionChance, AddNeuronChance, RemoveNeuronChance, RandomFunctionChance, WeightAdjustmentMagnitude, default, HiddenFunctions, true);
     public MutateOptions ExpandingMutateOptions => new MutateOptions(AddConnectionChance * ExpansionMult, RemoveConnectionChance * ExpansionMult, AdjustWeightChance * ExpansionMult, ToggleConnectionChance * ExpansionMult, AddNeuronChance * ExpansionMult, RemoveNeuronChance * ExpansionMult, RandomFunctionChance * ExpansionMult, WeightAdjustmentMagnitude * ExpansionMult, default, HiddenFunctions, true);
@@ -98,15 +98,15 @@ public class ConstantSheet
     //speciation
     public static SpeciationOptions SpeciationOptions => new SpeciationOptions(DisjointFactor, WeightFactor, CompatabilityThreshold, UseAdjustedFitness);
     public static float DisjointFactor = 1f;
-    public static float WeightFactor = 0.05f;
+    public static float WeightFactor = 0f;
     public static float CompatabilityThreshold = 0.5f;
-    public static bool UseAdjustedFitness = true;
+    public static bool UseAdjustedFitness = false;
 
     //species
-    public float SpeciesLoggingRate = 60f;
+    public float SpeciesLoggingRate = 15f;
     public bool UseSpeciesBudget = false;
-    public int MinSpeciesBudget = 5;
-    public static int TargetedPopulationSize = 120;
+    public int MinSpeciesBudget = 0;
+    public static int TargetedPopulationSize = 150;
 
     //gene mutations
     public float SizeMutationFactor = 0.4f;
@@ -137,7 +137,7 @@ public class ConstantSheet
     public float LeftoverBaseEnergy = 50f;
 
     //other
-    public int MinPopulation = 20;
+    public int MinPopulation = 40;
     public int CheckVisionStep = 1;
     public bool RaycastVision = true;
     public bool ShowParticles = false;
