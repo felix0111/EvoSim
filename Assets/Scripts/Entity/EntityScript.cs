@@ -459,7 +459,7 @@ public class Gene {
         Generation = 0;
         EntitySize = SimulationScript.Instance.CoSh.MinEntitySize;
         ViewDistance = SimulationScript.Instance.CoSh.MinViewDistance;
-        FieldOfView = SimulationScript.Instance.CoSh.MinFieldOfView;
+        FieldOfView = 15f;
         EntityColor = Color.white;
         PheromoneColor = Color.white;
         Diet = default;
